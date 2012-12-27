@@ -1,0 +1,7 @@
+[PDO_CUBRID]
+
+; configure for php CUBRID PDO module
+
+<% node['cubrid']['pdo_directives'].each do |directive, value| -%>
+<%= "#{directive}=\"#{value}\"" %>
+<% end -%>
