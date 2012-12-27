@@ -6,7 +6,7 @@ Provides recipies to install CUBRID Database 9.0 with its demodb database, and C
 
 Tested on:
 
-- Ubuntu 10.04 (Vagrant *lucid32* box)
+- Ubuntu 10.04 x86 (Vagrant *lucid32* box)
 
 ##Requirements
 
@@ -18,7 +18,7 @@ This **cubrid** cookbook depends on the following cookbooks:
 
 This cookbook provides the following recipes:
 
-- **cubrid**: installs CUBRID 9.0.
+- **cubrid**: installs CUBRID 9.0 x86.
 - **demodb**: installs CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database.
 - **pdo_cubrid**: installs CUBRID PDO driver 9.0.
 
@@ -139,9 +139,11 @@ This will:
 
 ## TODO
 
-1. Test on other **Linux distributions** including Fedora, CentOS, and other versions of Ubuntu.
-2. Implement **version support** to allow users to install different versions of CUBRID and the PDO driver.
-3. Create recipes for other **CURBID drivers** including PHP, Python, and Perl.
+1. Test on 64-bit Ubuntu 10.04.
+2. Test on other versions of Ubuntu.
+3. Test on other **Linux distributions** including Fedora and CentOS.
+4. Implement **version support** to allow users to install different versions of CUBRID and the PDO driver.
+5. Create recipes for other **CURBID drivers** including PHP, Python, and Perl.
 
 ## License and Authors
 
