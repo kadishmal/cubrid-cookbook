@@ -29,6 +29,3 @@ default['cubrid']['env_script_name'] = "cubrid.sh"
 default['cubrid']['env_script_original'] = "#{default['cubrid']['home']}/share/rpm/#{default['cubrid']['env_script_name']}"
 # the target path where the shell script should be placed so that when a user logs in the variables are available.
 default['cubrid']['env_script'] = "/etc/profile.d/#{default['cubrid']['env_script_name']}"
-
-# the full path of a script which install the demodb database
-default['cubrid']['demodb_script'] = "#{default['cubrid']['home']}/demo/make_cubrid_demo.sh"
