@@ -26,6 +26,12 @@ CUBRID_DATABASES_DIR = "#{CUBRID_HOME_DIR}/databases"
 CUBRID_DEMODB_DIR = "#{CUBRID_DATABASES_DIR}/demodb"
 ENV_SCRIPT = "#{node['cubrid']['env_script']}"
 
+ENV['CUBRID'] = "#{CUBRID_HOME_DIR}"
+ENV['CUBRID_DATABASES'] = "#{CUBRID_DATABASES_DIR}"
+ENV['CUBRID_LANG'] = "en_US"
+ENV['LD_LIBRARY_PATH'] = "#{CUBRID_HOME_DIR}/lib:#{ENV['LD_LIBRARY_PATH']}"
+ENV['PATH'] = "#{CUBRID_HOME_DIR}/bin:#{ENV['PATH']}"
+
 remote_file CUBRID_BINARY do
   user "vagrant"
   source "#{node['cubrid']['tar_url']}"
@@ -60,6 +66,7 @@ execute "Set environment variables script" do
   not_if "test -d #{ENV_SCRIPT}"
 end
 
+# start cubrid service
 execute "cubrid service start" do
   user "vagrant"
 end
