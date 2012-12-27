@@ -8,6 +8,7 @@
 #
 include_recipe "php"
 include_recipe "cubrid"
+include_recipe "apache2"
 
 USER_HOME_DIR = "#{node['cubrid']['user_home_dir']}"
 CUBRID_HOME_DIR = "#{node['cubrid']['home']}"
