@@ -1,6 +1,6 @@
 ## Description
 
-Provides recipies to install CUBRID Database 9.0 with its demodb database, and CUBRID PDO driver version 9.0. Create to use on Vagrant.
+Provides recipies to install CUBRID Database 9.0 with its demodb database, and CUBRID PDO driver version 9.0. Created to use on Vagrant box.
 
 ## Platform
 
@@ -18,7 +18,8 @@ This **cubrid** cookbook depends on the following cookbooks:
 
 This cookbook provides the following recipes:
 
-- **cubrid**: installs CUBRID 9.0 and [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database.
+- **cubrid**: installs CUBRID 9.0.
+- **demodb**: installs CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database.
 - **pdo_cubrid**: installs CUBRID PDO driver 9.0.
 
 ## Attributes
@@ -32,25 +33,32 @@ node['cubrid']['version']
 node['cubrid']['full_version']
 
 # the file name of the archive to download
-node['cubrid']['filename'] -
+node['cubrid']['filename']
 
 # the full URL of the TAR archive to download
-node['cubrid']['tar_url'] -
+node['cubrid']['tar_url']
 
 # the home directory of a Vagrant user
-node['cubrid']['user_home_dir'] -
+node['cubrid']['user_home_dir']
 # the target directory to install CUBRID
-node['cubrid']['home'] -
+node['cubrid']['home']
 
 # the file name of the shell scipt which sets environmental variables for CUBRID
-node['cubrid']['env_script_name'] -
+node['cubrid']['env_script_name']
 # the full path of the original shell script distributed with CUBRID source
-node['cubrid']['env_script_original'] -
+node['cubrid']['env_script_original']
 # the target path where the shell script should be placed so that when a user logs in the variables are available.
-node['cubrid']['env_script'] -
+node['cubrid']['env_script']
+```
+
+See the *attributes/demodb.rb* for default values.
+
+```
+# the target directory to install CUBRID
+node['cubrid']['home']
 
 # the full path of a script which install the demodb database
-node['cubrid']['demodb_script'] -
+node['cubrid']['demodb_script']
 ```
 
 See the *attributes/pdo_cubrid.rb* for **pdo_cubrid** specific values.
@@ -59,30 +67,32 @@ See the *attributes/pdo_cubrid.rb* for **pdo_cubrid** specific values.
 # the version of CUBRID to install
 node['cubrid']['version']
 # the home directory of a Vagrant user
-node['cubrid']['user_home_dir'] -
+node['cubrid']['user_home_dir']
 # the directory where CUBRID is installed
-node['cubrid']['home'] -
+node['cubrid']['home']
 
 # the version of the PDO driver to install
-node['cubrid']['pdo_version'] -
+node['cubrid']['pdo_version']
 # the name of a directory where PDO driver source code is extracted
-node['cubrid']['pdo_dirname'] -
+node['cubrid']['pdo_dirname']
 # the file name of the archive to download
-node['cubrid']['pdo_filename'] -
+node['cubrid']['pdo_filename']
 # the full URL of the TAR archive to download
-node['cubrid']['pdo_url'] -
+node['cubrid']['pdo_url']
 
 # the full path of a directory where pdo_cubrid.ini should be placed
-node['cubrid']['pdo_ext_conf_dir'] -
+node['cubrid']['pdo_ext_conf_dir']
 # the full path of pdo_cubrid.ini
-node['cubrid']['pdo_ext_conf'] -
+node['cubrid']['pdo_ext_conf']
 # the directives which should be placed in pdo_cubrid.ini files; these are populate to pdo_cubrid.ini.erb template of this cookbook.
-node['cubrid']['pdo_directives'] -
+node['cubrid']['pdo_directives']
 ```
 
 ## Usage
 
-If you want to install only CUBRID 9.0 without the PDO driver, use **default** recipe.
+### CUBRID Database
+
+If you want to install only CUBRID 9.0, use **default** recipe.
 
 ```
 chef.add_recipe "cubrid"
@@ -94,10 +104,24 @@ This will:
 2. Extract it to */opt/cubrid*.
 3. Remove the downloaded archive.
 4. Set environment variables which are auto loaded when user logs in to the system.
-5. Create CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database if it's not already created.
-6. Start CUBRID Service.
+5. Start CUBRID Service.
 
-If you also want to install the PDO driver, use **pdo_cubrid** recipe. **pdo_cubrid** recipe requires the **default** recipe to be installed beforehand.
+### CUBRID demodb database
+
+If you want to install CUBRID demodb database, use **demodb** recipe. This recipe depends on the **cubrid::default** recipe.
+
+```
+chef.add_recipe "cubrid::demodb"
+```
+
+This will:
+
+1. Create CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database if it's not already created.
+6. Auto start **demodb** database.
+
+### CUBRID PDO driver
+
+If you also want to install the PDO driver, use **pdo_cubrid** recipe. This recipe depends on the **cubrid::default** recipe.
 
 ```
 chef.add_recipe "cubrid::pdo_cubrid"
@@ -115,10 +139,9 @@ This will:
 
 ## TODO
 
-1. Implement **version support** to allow users to install different versions of CUBRID and the PDO driver.
-2. Create a separeate recipe to install the **demodb** database separately.
-3. Test on other **Linux distributions** including Fedora and CentOS.
-4. Create recipes for other **CURBID drivers** including PHP, Python, and Perl.
+1. Test on other **Linux distributions** including Fedora, CentOS, and other versions of Ubuntu.
+2. Implement **version support** to allow users to install different versions of CUBRID and the PDO driver.
+3. Create recipes for other **CURBID drivers** including PHP, Python, and Perl.
 
 ## License and Authors
 
