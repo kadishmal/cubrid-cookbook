@@ -1,12 +1,13 @@
 #
 # Cookbook Name:: cubrid
-# Recipe:: default
+# Recipe:: pdo_cubrid
 #
 # Copyright 2012, Esen Sagynov <kadishmal@gmail.com>
 #
 # Distributed under MIT license
 #
 include_recipe "php"
+include_recipe "cubrid"
 
 USER_HOME_DIR = "#{node['cubrid']['user_home_dir']}"
 CUBRID_HOME_DIR = "#{node['cubrid']['home']}"
