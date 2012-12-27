@@ -43,6 +43,7 @@ end
 file "#{CUBRID_BINARY}" do
   action :delete
   not_if "test -d #{CUBRID_HOME_DIR}"
+  backup false
 end
 
 execute "move CUBRID to #{CUBRID_HOME_DIR}" do

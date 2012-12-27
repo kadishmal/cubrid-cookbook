@@ -32,6 +32,7 @@ end
 file "#{USER_HOME_DIR}/#{PDO_FILENAME}" do
   action :delete
   not_if "php -i | grep 'Client API version => 9.0.0.0001'"
+  backup false
 end
 
 execute "configure phpize for #{PDO_FILENAME}" do
