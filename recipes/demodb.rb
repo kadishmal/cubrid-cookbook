@@ -23,10 +23,6 @@ end
 execute "#{node['cubrid']['demodb_script']}" do
   user "vagrant"
   cwd "#{CUBRID_DEMODB_DIR}"
-  environment({
-    "CUBRID" => "#{CUBRID_HOME_DIR}",
-    "CUBRID_DATABASES" => "#{CUBRID_DATABASES_DIR}"
-  })
   not_if "test -f #{CUBRID_DEMODB_DIR}/demodb"
 end
 
