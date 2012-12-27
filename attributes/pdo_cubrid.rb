@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: cubrid
-# Attributes:: default
+# Attributes:: pdo_cubrid
 #
 # Copyright 2012, Esen Sagynov <kadishmal@gmail.com>
 #
