@@ -6,6 +6,7 @@
 #
 # Distributed under MIT license
 #
+include_recipe "build-essential"
 include_recipe "php"
 include_recipe "cubrid"
 include_recipe "apache2"
@@ -36,19 +37,19 @@ file "#{USER_HOME_DIR}/#{PDO_FILENAME}" do
   backup false
 end
 
-execute "configure phpize for #{PDO_FILENAME}" do
+execute "configure phpize for #{PDO_DIRNAME}" do
   cwd "#{USER_HOME_DIR}/#{PDO_DIRNAME}"
   command "phpize"
   not_if "php -i | grep 'Client API version => 9.0.0.0001'"
 end
 
-execute "configure #{PDO_FILENAME}" do
+execute "configure #{PDO_DIRNAME}" do
   cwd "#{USER_HOME_DIR}/#{PDO_DIRNAME}"
   command "./configure --with-pdo-cubrid=#{CUBRID_HOME_DIR}"
   not_if "php -i | grep 'Client API version => 9.0.0.0001'"
 end
 
-execute "install #{PDO_FILENAME}" do
+execute "install #{PDO_DIRNAME}" do
   user "root"
   cwd "#{USER_HOME_DIR}/#{PDO_DIRNAME}"
   command "make && make install"
