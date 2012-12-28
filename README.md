@@ -54,9 +54,8 @@ node['cubrid']['env_script']
 See the *attributes/demodb.rb* for default values.
 
 ```
-# the target directory to install CUBRID
-node['cubrid']['home']
-
+# the directory where to install the demodb database
+node['cubrid']['demodb_dir']
 # the full path of a script which install the demodb database
 node['cubrid']['demodb_script']
 ```
@@ -64,24 +63,9 @@ node['cubrid']['demodb_script']
 See the *attributes/pdo_cubrid.rb* for **pdo_cubrid** specific values.
 
 ```
-# the version of CUBRID to install
-node['cubrid']['version']
-# the home directory of a Vagrant user
-node['cubrid']['user_home_dir']
-# the directory where CUBRID is installed
-node['cubrid']['home']
+# the name of a PECL package to install CUBRID PDO driver
+node['cubrid']['pdo_package']
 
-# the version of the PDO driver to install
-node['cubrid']['pdo_version']
-# the name of a directory where PDO driver source code is extracted
-node['cubrid']['pdo_dirname']
-# the file name of the archive to download
-node['cubrid']['pdo_filename']
-# the full URL of the TAR archive to download
-node['cubrid']['pdo_url']
-
-# the full path of a directory where pdo_cubrid.ini should be placed
-node['cubrid']['pdo_ext_conf_dir']
 # the full path of pdo_cubrid.ini
 node['cubrid']['pdo_ext_conf']
 # the directives which should be placed in pdo_cubrid.ini files; these are populate to pdo_cubrid.ini.erb template of this cookbook.
