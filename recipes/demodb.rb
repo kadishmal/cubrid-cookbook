@@ -8,9 +8,7 @@
 #
 include_recipe "cubrid"
 
-CUBRID_HOME_DIR = "#{node['cubrid']['home']}"
-CUBRID_DATABASES_DIR = "#{CUBRID_HOME_DIR}/databases"
-CUBRID_DEMODB_DIR = "#{CUBRID_DATABASES_DIR}/demodb"
+CUBRID_DEMODB_DIR = "#{node['cubrid']['demodb_dir']}"
 
 # create a "demodb" directory if it doesn't exist
 directory "#{CUBRID_DEMODB_DIR}" do
