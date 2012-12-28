@@ -6,7 +6,7 @@ Provides recipies to install CUBRID Database 9.0 with its demodb database, and C
 
 Tested on:
 
-- Ubuntu 10.04 x86 (Vagrant *lucid32* box)
+- Ubuntu 10.04 x86/x64 (Vagrant *[lucid32](http://files.vagrantup.com/lucid32.box)*/*[lucid64](http://files.vagrantup.com/lucid64.box)* boxes)
 
 ##Requirements
 
@@ -116,7 +116,7 @@ This will:
 
 1. Install CUBRID PDO driver 9.0 from [PHP PECL Repository](http://pecl.php.net/package/PDO_CUBRID) if the PDO driver is not already installed. It will check the result of `php -i` for the existance of a special CUBRID PDO string.
 2. Create */etc/php5/conf.d/pdo_cubrid.ini*.
-3. Restart Apacher Service.
+3. Restart Apache Service.
 
 ## TODO
 

@@ -23,7 +23,6 @@ FILENAME = "#{node['cubrid']['filename']}"
 CUBRID_BINARY = "#{USER_HOME_DIR}/#{FILENAME}"
 CUBRID_HOME_DIR = "#{node['cubrid']['home']}"
 CUBRID_DATABASES_DIR = "#{CUBRID_HOME_DIR}/databases"
-CUBRID_DEMODB_DIR = "#{CUBRID_DATABASES_DIR}/demodb"
 ENV_SCRIPT = "#{node['cubrid']['env_script']}"
 
 ENV['CUBRID'] = "#{CUBRID_HOME_DIR}"

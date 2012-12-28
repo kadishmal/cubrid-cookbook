@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of cubrid.
 
+## 1.1.2
+
+- Fixed a bug which appeared after last commit.
+- Added support for x64 platform.
+- Updated README.
+
 ## 1.1.1:
 
 - Install CUBRID PDO driver from PECL.
