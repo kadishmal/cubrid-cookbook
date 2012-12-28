@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 1.3.0
+
+- New: added support for CUBRID 8.4.3 and 8.4.1 as well as corresponding PDO and PHP drivers.
+- Enh: improved the check whether or not CUBRID PHP and PDO driver are installed and enabled.
+- Doc: updated README.
+
 ## 1.2.0
 
 - New: added PHP driver recipe.
