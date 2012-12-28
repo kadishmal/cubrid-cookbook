@@ -1,0 +1,7 @@
+[CUBRID]
+
+; configure for php CUBRID module
+
+<% node['cubrid']['php_directives'].each do |directive, value| -%>
+<%= "#{directive}=\"#{value}\"" %>
+<% end -%>

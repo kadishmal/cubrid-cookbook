@@ -105,6 +105,20 @@ This will:
 1. Create CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database if it's not already created.
 6. Auto start **demodb** database.
 
+### CUBRID PHP driver
+
+If you also want to install CUBRID PHP driver, use **php_driver** recipe. This recipe depends on the **cubrid::default** recipe.
+
+```
+chef.add_recipe "cubrid::php_driver"
+```
+
+This will:
+
+1. Install CUBRID PHP driver 9.0 from [PHP PECL Repository](http://pecl.php.net/package/PDO_CUBRID) if it is not already installed. It will check the result of `php -i` for the existance of a special CUBRID PHP string.
+2. Create */etc/php5/conf.d/cubrid.ini*.
+3. Restart Apache Service.
+
 ### CUBRID PDO driver
 
 If you also want to install the PDO driver, use **pdo_cubrid** recipe. This recipe depends on the **cubrid::default** recipe.
@@ -121,11 +135,9 @@ This will:
 
 ## TODO
 
-1. Test on 64-bit Ubuntu 10.04.
-2. Test on other versions of Ubuntu.
-3. Test on other **Linux distributions** including Fedora and CentOS.
-4. Implement **version support** to allow users to install different versions of CUBRID and the PDO driver.
-5. Create recipes for other **CURBID drivers** including PHP, Python, and Perl.
+1. Implement **version support** to allow users to install different versions of CUBRID and the PDO driver.
+2. Test on other **Linux distributions** including Fedora and CentOS.
+3. Create recipes for other **CURBID drivers**: Python, Perl.
 
 ## License and Authors
 

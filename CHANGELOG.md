@@ -1,27 +1,33 @@
 # CHANGELOG for cubrid
 
-This file is used to list changes made in each version of cubrid.
+This file is used to list changes made in each version of this cubrid cookbook.
+
+## 1.2.0
+
+- New: added PHP driver recipe.
+- Enh: check if the same version of PDO driver is installed as specified by a user. Used to check only for 9.0.0.
+- Doc: updated README.
 
 ## 1.1.2
 
-- Fixed a bug which appeared after last commit.
-- Added support for x64 platform.
-- Updated README.
+- New: added support for x64 platform.
+- Fix: a bug which appeared after last commit.
+- Doc: updated README.
 
 ## 1.1.1
 
-- Install CUBRID PDO driver from PECL.
-- Don't backup downloaded binary archives.
-- Add CUBRID global environmental variables.
-- "pdo_cubrid" depends on "build-essential" cookbook in order to "make".
-- Consolidated demodb attributes.
+- Enh: install CUBRID PDO driver from PECL.
+- Enh: don't backup downloaded binary archives.
+- Enh: add CUBRID global environmental variables.
+- Enh: "pdo_cubrid" depends on "build-essential" cookbook in order to "make".
+- Enh: consolidated demodb attributes.
 
 ## 1.1.0
 
-- A new "demodb" recipe to install CUBRID demodb database.
-- Added MIT license file.
-- Updated README.
+- New: "demodb" recipe to install CUBRID demodb database.
+- Doc: added MIT license file.
+- Doc: updated README.
 
 ## 1.0.0
 
-- Initial release of cubrid-chef. Provides recipies to install CUBRID Database 9.0, its demodb database, and PDO_CUBRID 9.0.0.0001.
+- New: initial release of cubrid-chef. Provides recipies to install CUBRID Database 9.0, its demodb database, and PDO_CUBRID 9.0.0.0001.
