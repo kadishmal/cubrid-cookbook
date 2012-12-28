@@ -13,7 +13,7 @@ Tested on:
 
 This **cubrid** cookbook depends on the following cookbooks:
 
-- *build-essential* and *php* cookbooks for **pdo_cubrid** recipe.
+- *[build-essential](http://community.opscode.com/cookbooks/build-essential)*, *[php](http://community.opscode.com/cookbooks/php)*, and *[apache2](http://community.opscode.com/cookbooks/apache2)* cookbooks for **pdo_cubrid** and **php_driver** recipes.
 
 ## Recipes
 
@@ -21,8 +21,8 @@ This cookbook provides the following recipes:
 
 - **cubrid**: installs the specified version of CUBRID Database (*default: v9.0*).
 - **demodb**: installs CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database.
-- **php_driver**: installs CUBRID PHP driver (*same version as CUBRID Database*).
-- **pdo_cubrid**: installs CUBRID PDO driver (*same version as CUBRID Database, except when CUBRID 8.4.1 is installed in which case PDO driver 8.4.0 is installed as they are compatible*).
+- **php_driver**: installs [CUBRID PHP driver](http://www.cubrid.org/wiki_apis/entry/cubrid-php-driver) (*same version as CUBRID Database*).
+- **pdo_cubrid**: installs [CUBRID PDO driver](http://www.cubrid.org/wiki_apis/entry/cubrid-pdo-driver) (*same version as CUBRID Database, except when CUBRID 8.4.1 is installed in which case PDO driver 8.4.0 is installed as they are compatible*).
 
 ## Attributes
 
