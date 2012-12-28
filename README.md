@@ -84,10 +84,11 @@ chef.add_recipe "cubrid"
 
 This will:
 
-1. Download the latest CUBRID 9.0 (`tar.gz`) from [CUBRID FTP Server](http://ftp.cubrid.org) if CUBRID is not already installed at */opt/cubrid*.
-2. Extract it to */opt/cubrid*.
-3. Remove the downloaded archive.
-4. Set environment variables which are auto loaded when user logs in to the system.
+1. Set envrionmental vartiables for CUBRID.
+2. Download the latest CUBRID 9.0 (`tar.gz`) from [CUBRID FTP Server](http://ftp.cubrid.org) if CUBRID is not already installed at */opt/cubrid*.
+3. Extract it to */opt/cubrid*.
+4. Remove the downloaded archive.
+5. Setup the startup script for a user to auto set environmental variables when the user logs in to the system.
 5. Start CUBRID Service.
 
 ### CUBRID demodb database
@@ -113,13 +114,9 @@ chef.add_recipe "cubrid::pdo_cubrid"
 
 This will:
 
-1. Download CUBRID PDO driver 9.0 from [PHP PECL Repository](http://pecl.php.net/package/PDO_CUBRID) if the PDO driver is not already installed. It will check the result of `php -i` for the existance of a special CUBRID PDO string.
-2. Extract the archive to a user directory.
-3. Configure the code with **phpize**.
-4. `make install` to */usr/lib/php5/20090626+lfs/pdo_cubrid.so*
-5. Create */etc/php5/conf.d/pdo_cubrid.ini*.
-6. Remove the downloaded archive as well as the extracted source directory.
-7. Restart Apacher Service.
+1. Install CUBRID PDO driver 9.0 from [PHP PECL Repository](http://pecl.php.net/package/PDO_CUBRID) if the PDO driver is not already installed. It will check the result of `php -i` for the existance of a special CUBRID PDO string.
+2. Create */etc/php5/conf.d/pdo_cubrid.ini*.
+3. Restart Apacher Service.
 
 ## TODO
 
