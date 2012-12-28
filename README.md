@@ -6,7 +6,8 @@ Provides recipies to install CUBRID Database 9.0 with its demodb database, and C
 
 Tested on:
 
-- Ubuntu 10.04 x86/x64 (Vagrant *[lucid32](http://files.vagrantup.com/lucid32.box)*/*[lucid64](http://files.vagrantup.com/lucid64.box)* boxes)
+- Ubuntu 10.04 LTS x86/x64 (Vagrant *[lucid32](http://files.vagrantup.com/lucid32.box)*/*[lucid64](http://files.vagrantup.com/lucid64.box)* boxes)
+- Ubuntu 12.04 LTS x86/x64 (Vagrant *[precise32](http://files.vagrantup.com/precise32.box)*/*[precise64](http://files.vagrantup.com/precise64.box)* boxes)
 
 ##Requirements
 
