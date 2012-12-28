@@ -11,8 +11,10 @@ include_recipe "php"
 include_recipe "cubrid"
 include_recipe "apache2"
 
+CUBRID_PDO_INSTALLED = "php -i | grep 'Client API version => #{node['cubrid']['pdo_version']}'"
+
 execute "echo '#{node['cubrid']['home']}' | pecl install #{node['cubrid']['pdo_package']}" do
-  not_if "php -i | grep 'Client API version => 9.0.0.0001'"
+  not_if "#{CUBRID_PDO_INSTALLED}"
 end
 
 template "#{node['cubrid']['pdo_ext_conf']}" do
@@ -21,7 +23,7 @@ template "#{node['cubrid']['pdo_ext_conf']}" do
   group "root"
   mode 0644
   backup false
-  not_if "php -i | grep 'Client API version => 9.0.0.0001'"
+  not_if "#{CUBRID_PDO_INSTALLED}"
 end
 
 service "apache2" do
