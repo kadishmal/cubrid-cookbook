@@ -2,6 +2,15 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 1.3.1
+
+- New: created "cubrid_database" provider to create new databases.
+- New: created "new_dbs" recipe which allows to create multiple databases.
+- Enh: remove Apache2 dependency from **php_driver** and **pdo_cubrid** recipes.
+- Ref: remove unnecessary user definition.
+- Com: added comments.
+- Doc: updated README.
+
 ## 1.3.0
 
 - New: added support for CUBRID 8.4.3 and 8.4.1 as well as corresponding PDO and PHP drivers.
