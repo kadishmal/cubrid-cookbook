@@ -13,7 +13,6 @@ description      "Installs/Configures cubrid"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "1.1.2"
 
-depends          "apache2"
 depends          "build-essential"
 depends          "php"
 
@@ -21,5 +20,7 @@ depends          "php"
   supports os
 end
 
-recipe "cubrid", "Installs CUBRID 9.0"
-recipe "pdo_cubrid", "Installs CUBRID PDO driver 9.0"
+recipe "cubrid", "Installs CUBRID Database"
+recipe "cubrid::demodb", "Installs CUBRID demodb database"
+recipe "cubrid::pdo_cubrid", "Installs CUBRID PDO driver"
+recipe "cubrid::php_driver", "Installs CUBRID PHP driver"

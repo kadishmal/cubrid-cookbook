@@ -9,7 +9,6 @@
 include_recipe "build-essential"
 include_recipe "php"
 include_recipe "cubrid"
-include_recipe "apache2"
 
 CUBRID_PDO_INSTALLED = "pecl list | egrep '^PDO_CUBRID\s+#{node['cubrid']['pdo_version']}'"
 CUBRID_PDO_ENABLED = "php -i | grep 'Client API version => #{node['cubrid']['pdo_version']}'"
@@ -25,8 +24,4 @@ template "#{node['cubrid']['pdo_ext_conf']}" do
   mode 0644
   backup false
   not_if "#{CUBRID_PDO_ENABLED}"
-end
-
-service "apache2" do
-  action :restart
 end

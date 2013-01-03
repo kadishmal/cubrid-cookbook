@@ -9,7 +9,6 @@
 include_recipe "build-essential"
 include_recipe "php"
 include_recipe "cubrid"
-include_recipe "apache2"
 
 CUBRID_PHP_INSTALLED = "pecl list | egrep '^CUBRID\s+#{node['cubrid']['php_version']}'"
 CUBRID_PHP_ENABLED = "php -i | grep 'Driver Version => #{node['cubrid']['php_version']}'"
@@ -24,8 +23,4 @@ template "#{node['cubrid']['php_ext_conf']}" do
   group "root"
   mode 0644
   not_if "#{CUBRID_PHP_ENABLED}"
-end
-
-service "apache2" do
-  action :restart
 end
