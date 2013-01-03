@@ -32,7 +32,6 @@ ENV['LD_LIBRARY_PATH'] = "#{CUBRID_HOME_DIR}/lib:#{ENV['LD_LIBRARY_PATH']}"
 ENV['PATH'] = "#{CUBRID_HOME_DIR}/bin:#{ENV['PATH']}"
 
 remote_file CUBRID_BINARY do
-  user "vagrant"
   source "#{node['cubrid']['tar_url']}"
   mode 0644
   not_if "test -d #{CUBRID_HOME_DIR}"
