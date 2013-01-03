@@ -14,6 +14,7 @@ build_numbers = {'9.0.0' => '0478', '8.4.3' => '1005', '8.4.1' => '7007'}
 default['cubrid']['version'] = "9.0.0"
 # the full version of CUBRID including the build number
 set['cubrid']['full_version'] = "#{node['cubrid']['version']}.#{build_numbers[node['cubrid']['version']]}"
+# the architecture of CUBRID binaries to install based on the current system architecture
 set['cubrid']['arch'] = node['kernel']['machine'] =~ /x86_64/ ? "x86_64" : "i386"
 
 # the file name of the archive to download
