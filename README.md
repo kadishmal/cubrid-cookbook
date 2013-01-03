@@ -1,18 +1,19 @@
 ## Description
 
-Provides recipies to install CUBRID Database 9.0 with its demodb database, and CUBRID PDO driver version 9.0. Created to use on Vagrant box.
+Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database, CUBRID PDO and PHP drivers (*see [Recipies](#recipes) below*). The cookbook is tested on Vagrant boxes (*see [Platform](#platform) below*).
 
 ## Platform
 
 Tested on:
 
-- Ubuntu 10.04 LTS x86/x64 (Vagrant *[lucid32](http://files.vagrantup.com/lucid32.box)*/*[lucid64](http://files.vagrantup.com/lucid64.box)* boxes)
-- Ubuntu 12.04 LTS x86/x64 (Vagrant *[precise32](http://files.vagrantup.com/precise32.box)*/*[precise64](http://files.vagrantup.com/precise64.box)* boxes)
+- Ubuntu 10.04 LTS x86/x64 (Vagrant *[Ubuntu lucid 32](http://files.vagrantup.com/lucid32.box)*/*[lucid64](http://files.vagrantup.com/lucid64.box)* boxes)
+- Ubuntu 12.04 LTS x86/x64 (Vagrant *[Ubuntu lucid 64](http://files.vagrantup.com/precise32.box)*/*[precise64](http://files.vagrantup.com/precise64.box)* boxes)
 
 ##Requirements
 
-This **cubrid** cookbook depends on the following cookbooks:
+This **cubrid** cookbook depends on the following:
 
+- Chef 0.10.10+. Make sure you have the latest version of Chef. [Update](http://wiki.opscode.com/display/chef/Upgrading+Chef+0.10.x+to+the+newest+version+of+Chef) if necessary.
 - *[build-essential](http://community.opscode.com/cookbooks/build-essential)*, *[php](http://community.opscode.com/cookbooks/php)*, and *[apache2](http://community.opscode.com/cookbooks/apache2)* cookbooks for **pdo_cubrid** and **php_driver** recipes.
 
 ## Recipes
@@ -76,12 +77,15 @@ default['cubrid']['version']
 # the version of a CUBRID PDO driver to install from PECL
 set['cubrid']['pdo_version']
 # the name of a PECL package to install CUBRID PDO driver
-node['cubrid']['pdo_package']
+set['cubrid']['pdo_package']
+
+# the location of PHP configuration directory
+set['cubrid']['php_ext_conf_dir']
 
 # the full path of pdo_cubrid.ini
-node['cubrid']['pdo_ext_conf']
+set['cubrid']['pdo_ext_conf']
 # the directives which should be placed in pdo_cubrid.ini files; these are populate to pdo_cubrid.ini.erb template of this cookbook.
-node['cubrid']['pdo_directives']
+set['cubrid']['pdo_directives']
 ```
 
 See the *attributes/php_driver.rb* for **php_driver** specific values.
@@ -94,6 +98,9 @@ default['cubrid']['version']
 set['cubrid']['php_version']
 # the name of a PECL package to install CUBRID PHP driver
 set['cubrid']['php_package']
+
+# the location of PHP configuration directory
+set['cubrid']['php_ext_conf_dir']
 
 # the full path of cubrid.ini
 set['cubrid']['php_ext_conf']
@@ -110,7 +117,7 @@ If you want to install the *default* 9.0.0 version of CUBRID, use **default** re
 chef.add_recipe "cubrid"
 ```
 
-Alternatively, you can install other versions like 8.4.1 and 8.4.3.
+Alternatively, you can install other versions like 8.4.1 or 8.4.3.
 
 ```
 chef.json = {
@@ -176,6 +183,9 @@ This will:
 
 1. Test on other **Linux distributions** including Fedora and CentOS.
 2. Create recipes for other **CUBRID drivers**: Python, Perl.
+3. Create a recipe to create a custom database with user defined database name, username, and user password. Next version allow to specify `--db-volume-size` and other database options.
+4. Add support for multi VM configuration to automatically create master-slave HA environment.
+5. Create [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager) recipe.
 
 ## License and Authors
 
