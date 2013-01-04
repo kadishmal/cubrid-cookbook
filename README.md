@@ -1,33 +1,37 @@
 ## Description
 
-Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database, CUBRID PDO and PHP drivers (*see [Recipies](#recipes) below*). The cookbook is tested on Vagrant boxes (*see [Platform](#platform) below*).
+Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), CUBRID PDO and PHP drivers (*see [Recipies](#recipes) below*), create the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database, and automatically configure CUBRID HA environment.
+
+This **cubrid** cookbook is tested on [Vagrant](http://www.cubrid.org/wiki_tutorials/entry/create-a-cubrid-database-vm-with-vagrant-and-chef-cookbook-under-5-minutes) boxes (*see [Platform](#platform) below*).
 
 ## Platform
 
 Tested on:
 
-- Ubuntu 10.04 LTS x86/x64 (Vagrant *[Ubuntu lucid 32](http://files.vagrantup.com/lucid32.box)*/*[lucid64](http://files.vagrantup.com/lucid64.box)* boxes)
 - Ubuntu 12.04 LTS x86/x64 (Vagrant *[Ubuntu lucid 64](http://files.vagrantup.com/precise32.box)*/*[precise64](http://files.vagrantup.com/precise64.box)* boxes)
+- Ubuntu 10.04 LTS x86/x64 (Vagrant *[Ubuntu lucid 32](http://files.vagrantup.com/lucid32.box)*, *[Ubuntu lucid 64](http://files.vagrantup.com/lucid64.box)* boxes)
+- Ubuntu 12.04 LTS x86/x64 (Vagrant *[Ubuntu precise 32](http://files.vagrantup.com/precise32.box)*, *[Ubuntu precise 64](http://files.vagrantup.com/precise64.box)* boxes)
 
 ##Requirements
 
-This **cubrid** cookbook depends on the following:
+This **cubrid** cookbook has the following dependencies:
 
 - Chef 0.10.10+. Make sure you have the latest version of Chef. [Update](http://wiki.opscode.com/display/chef/Upgrading+Chef+0.10.x+to+the+newest+version+of+Chef) if necessary.
-- *[build-essential](http://community.opscode.com/cookbooks/build-essential)*, *[php](http://community.opscode.com/cookbooks/php)*, and *[apache2](http://community.opscode.com/cookbooks/apache2)* cookbooks for **pdo_cubrid** and **php_driver** recipes.
+- [build-essential](http://community.opscode.com/cookbooks/build-essential) and [php](http://community.opscode.com/cookbooks/php) cookbooks for **pdo_cubrid** and **php_driver** recipes.
 
 ## Recipes
 
 This cookbook provides the following recipes:
 
-- **cubrid**: installs the specified version of CUBRID Database (*default: v9.0*).
-- **demodb**: installs CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database.
+- **cubrid**: installs the specified version of CUBRID Database. Available versions: 8.4.1, 8.4.3, 9.0.0  (*default*).
+- **demodb**: creates CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database.
+- **ha**: configures CUBRID HA in multi VM environment.
 - **php_driver**: installs [CUBRID PHP driver](http://www.cubrid.org/wiki_apis/entry/cubrid-php-driver) (*same version as CUBRID Database*).
 - **pdo_cubrid**: installs [CUBRID PDO driver](http://www.cubrid.org/wiki_apis/entry/cubrid-pdo-driver) (*same version as CUBRID Database, except when CUBRID 8.4.1 is installed in which case PDO driver 8.4.0 is installed as they are compatible*).
 
 ## Attributes
 
-See the *attributes/default.rb* for default values.
+### attributes/default.rb
 
 ```
 # the default version of CUBRID to install
@@ -56,7 +60,24 @@ set['cubrid']['env_script_original']
 set['cubrid']['env_script']
 ```
 
-See the *attributes/demodb.rb* for **demodb** specific values.
+### attributes/database.rb
+
+```
+# the default target directory to install CUBRID
+default['cubrid']['home']
+
+# the directory to store CUBRID databases
+set['cubrid']['databases_dir']
+
+# "data_buffer_size" parameter value used in conf/cubrid.conf
+default['cubrid']['data_buffer_size']
+# "db_volume_size" parameter value used in conf/cubrid.conf
+default['cubrid']['db_volume_size']
+# "log_volume_size" parameter value used in conf/cubrid.conf
+default['cubrid']['log_volume_size']
+```
+
+### attributes/demodb.rb
 
 ```
 # the default target directory to install CUBRID
@@ -68,7 +89,40 @@ set['cubrid']['demodb_dir']
 set['cubrid']['demodb_script']
 ```
 
-See the *attributes/pdo_cubrid.rb* for **pdo_cubrid** specific values.
+### attributes/ha.rb
+
+```
+# a default list of databases to create and configure for CUBRID HA
+default['cubrid']['ha_dbs']
+# the name of the HA group
+default['cubrid']['ha_group']
+# a default list of hosts to join ha_group
+# in the form of { "node1" => "IP 1", "node2" => "IP 2" ... }
+default['cubrid']['ha_hosts']
+
+# ha_db_list in the form of db1,db2...
+set['cubrid']['ha_db_list']
+# ha_hosts_list in the form of node1:node2...
+set['cubrid']['ha_hosts_list']
+# ha_node_list in the form of ha_group@ha_hosts_list
+set['cubrid']['ha_node_list']
+
+# the configurations directory
+set['cubrid']['conf_dir']
+# full path to cubrid.conf
+set['cubrid']['conf']
+# full path to cubrid_ha.conf
+set['cubrid']['ha_conf']
+```
+
+### attributes/new_dbs.rb
+
+```
+# a default list of databases to create
+default['cubrid']['new_dbs']
+```
+
+### attributes/pdo_cubrid.rb
 
 ```
 # the default version of CUBRID to install
@@ -88,7 +142,7 @@ set['cubrid']['pdo_ext_conf']
 set['cubrid']['pdo_directives']
 ```
 
-See the *attributes/php_driver.rb* for **php_driver** specific values.
+### attributes/php_driver.rb
 
 ```
 # the default version of CUBRID to install
@@ -117,7 +171,7 @@ If you want to install the *default* 9.0.0 version of CUBRID, use **default** re
 chef.add_recipe "cubrid"
 ```
 
-Alternatively, you can install other versions like 8.4.1 or 8.4.3.
+To install another version of CUBRID like 8.4.1 or 8.4.3, override the `version` attribute in Chef JSON.
 
 ```
 chef.json = {
@@ -136,11 +190,11 @@ This will:
 3. Extract it to */opt/cubrid*.
 4. Remove the downloaded archive.
 5. Setup the startup script for a user to auto set environmental variables when the user logs in to the system.
-5. Start CUBRID Service.
+6. Start CUBRID Service.
 
 ### CUBRID demodb database
 
-If you want to install CUBRID demodb database, use **demodb** recipe. This recipe depends on the **cubrid::default** recipe.
+If you want to install CUBRID [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database, use **demodb** recipe. This recipe depends on **cubrid::default** recipe.
 
 ```
 chef.add_recipe "cubrid::demodb"
@@ -148,8 +202,70 @@ chef.add_recipe "cubrid::demodb"
 
 This will:
 
-1. Create CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database if it's not already created.
-6. Auto start **demodb** database.
+1. Create CUBRID's demodb database if it's not already created.
+2. Auto start **demodb** database.
+
+### CUBRID HA
+
+If you want to have [CUBRID HA](http://www.cubrid.org/manual/843/en/CUBRID%20HA) configured for you automatically on multi VM environment, use **ha** recipe. With CUBRID HA you can have very reliable and predictable automatic failover between your database nodes.
+
+This recipe depends on **cubrid::default** recipe.
+
+```
+chef.add_recipe "cubrid::ha"
+```
+
+This will:
+
+1. Check if `ha_hosts` attribute is provided by a user. That is, you **must** pass a list of hosts to join CUBRID HA group. `ha_hosts` should be a hash of **host=>IP** key-values:
+
+        chef.json = {
+            "cubrid" => {
+                "ha_hosts" => {"node1" => "10.11.12.13", "node2" => "10.11.12.14"}
+            }
+        }
+        
+	If `ha_hosts` is not provided, an error will be raise saying: **Cannot configure CUBRID HA without ha_hosts. Refer to "ha_hosts" attribute in /cubrid/attributes/ha.rb for the syntax.**
+2. Create all databases listed in `ha_dbs` array which need to be replicated between master:slave nodes in HA environment, if they are not already created. If user doesn't override this attribute, `ha_dbs=["testdb"]`.
+3. Update */opt/cubrid/databases/databases.txt* file to set `ha_hosts` for each database, if it is not already updated.
+4. Update */etc/hosts* with new **IP - host** values defined in `ha_hosts`, if it is not already updated.
+5. Update *conf/cubrid.conf* configuration file to turn on CUBRID HA.
+6. Update *conf/cubrid_ha.conf* with new configurations for CUBRID HA.
+7. Restart CUBRID Service.
+8. Start [CUBRID Heartbeat](http://www.cubrid.org/manual/843/en/Utilities%20of%20cubrid%20heartbeat).
+
+### Create new databases
+
+If you also want to create multiple databases, use **new_dbs** recipe. This recipe depends on the **cubrid::default** recipe.
+
+    chef.json = {
+        "cubrid" => {
+            "new_dbs" => ["apple_db", "banana_db"],
+        }
+    }
+    
+    chef.add_recipe "cubrid::new_dbs"
+
+
+This will:
+
+1. Create all databases defined in `new_dbs` attribute.
+2. Auto start all databases.
+
+### CUBRID PDO driver
+
+If you want to install CUBRID PDO driver, use **pdo_cubrid** recipe. This recipe depends on the **cubrid::default** recipe.
+
+```
+chef.add_recipe "cubrid::pdo_cubrid"
+```
+
+This will:
+
+1. Install CUBRID PDO driver from [PHP PECL Repository](http://pecl.php.net/package/PDO_CUBRID) if the PDO driver is not already installed (*same version as the previously installed CUBRID Database*).
+2. Create */etc/php5/conf.d/pdo_cubrid.ini*.
+
+**Note**: this recipe as well as **php_driver** do not restart your Web server automatically because they do not know which Web server you use. So, if necessary, restart your Web server manually.
 
 ### CUBRID PHP driver
 
@@ -163,29 +279,13 @@ This will:
 
 1. Install CUBRID PHP driver from [PHP PECL Repository](http://pecl.php.net/package/CUBRID) if it is not already installed (*same version as the previously installed CUBRID Database*).
 2. Create */etc/php5/conf.d/cubrid.ini*.
-3. Restart Apache Service.
-
-### CUBRID PDO driver
-
-If you also want to install the PDO driver, use **pdo_cubrid** recipe. This recipe depends on the **cubrid::default** recipe.
-
-```
-chef.add_recipe "cubrid::pdo_cubrid"
-```
-
-This will:
-
-1. Install CUBRID PDO driver from [PHP PECL Repository](http://pecl.php.net/package/PDO_CUBRID) if the PDO driver is not already installed (*same version as the previously installed CUBRID Database*).
-2. Create */etc/php5/conf.d/pdo_cubrid.ini*.
-3. Restart Apache Service.
 
 ## TODO
 
 1. Test on other **Linux distributions** including Fedora and CentOS.
-2. Create recipes for other **CUBRID drivers**: Python, Perl.
-3. Create a recipe to create a custom database with user defined database name, username, and user password. Next version allow to specify `--db-volume-size` and other database options.
-4. Add support for multi VM configuration to automatically create master-slave HA environment.
-5. Create [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager) recipe.
+2. Add other **CUBRID drivers** support: Python, Perl.
+3. Add [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager) support.
+4. Add [CUBRID Sharding](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) support.
 
 ## License and Authors
 
