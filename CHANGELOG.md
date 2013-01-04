@@ -2,6 +2,13 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 1.4.0
+
+- New: added an "autostart" option to cubrid_database provider.
+- New: added CUBRID HA support through "ha" recipe.
+- Doc: updated README.
+- Com: updated comments.
+
 ## 1.3.1
 
 - New: created "cubrid_database" provider to create new databases.
