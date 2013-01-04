@@ -37,8 +37,10 @@ action :create do
     not_if "test -f #{DIR}/#{DB}"
   end
 
-  # start this database
-  execute "cubrid server start #{DB}" do
-    user "vagrant"
+  if new_resource.autostart
+    # start this database
+    execute "cubrid server start #{DB}" do
+      user "vagrant"
+    end
   end
 end
