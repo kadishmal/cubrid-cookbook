@@ -8,7 +8,6 @@ This **cubrid** cookbook is tested on [Vagrant](http://www.cubrid.org/wiki_tutor
 
 Tested on:
 
-- Ubuntu 12.04 LTS x86/x64 (Vagrant *[Ubuntu lucid 64](http://files.vagrantup.com/precise32.box)*/*[precise64](http://files.vagrantup.com/precise64.box)* boxes)
 - Ubuntu 10.04 LTS x86/x64 (Vagrant *[Ubuntu lucid 32](http://files.vagrantup.com/lucid32.box)*, *[Ubuntu lucid 64](http://files.vagrantup.com/lucid64.box)* boxes)
 - Ubuntu 12.04 LTS x86/x64 (Vagrant *[Ubuntu precise 32](http://files.vagrantup.com/precise32.box)*, *[Ubuntu precise 64](http://files.vagrantup.com/precise64.box)* boxes)
 
