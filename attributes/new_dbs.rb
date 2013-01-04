@@ -8,5 +8,5 @@
 #
 include_attribute "cubrid::database"
 
-# default list of databases to create
+# a default list of databases to create
 default['cubrid']['new_dbs'] = []

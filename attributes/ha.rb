@@ -36,7 +36,7 @@ end
 set['cubrid']['ha_db_list'] = HA_DB_LIST
 # ha_hosts_list in the form of node1:node2...
 set['cubrid']['ha_hosts_list'] = HA_HOSTS
-# ha_node_list in the form of ha_group@ha_hosts
+# ha_node_list in the form of ha_group@ha_hosts_list
 set['cubrid']['ha_node_list'] = "#{node['cubrid']['ha_group']}@#{HA_HOSTS}"
 
 # the configurations directory
