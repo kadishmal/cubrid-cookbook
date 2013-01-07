@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 1.5.0
+
+- New: added CUBRID Web Manager support through **web_manager** recipe.
+- Doc: fixed README.
+- Doc: updated README.
+
 ## 1.4.0
 
 - New: added an "autostart" option to cubrid_database provider.
