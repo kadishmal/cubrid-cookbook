@@ -46,10 +46,10 @@ if node['cubrid']['version'] != "8.4.3"
     only_if "test -f #{CWM_BINARY}"
   end
 
-  directory "#{USER_HOME_DIR}/#{CWM_EXTRACT_DIR_NAME}" do
+  directory "#{CWM_EXTRACT_DIR_NAME}" do
     action :delete
     recursive true
-    only_if "test -d #{USER_HOME_DIR}/#{CWM_EXTRACT_DIR_NAME}"
+    only_if "test -d #{CWM_EXTRACT_DIR_NAME}"
   end
 
   file "#{CWM_BINARY}" do
