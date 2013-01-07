@@ -1,6 +1,6 @@
 ## Description
 
-Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), CUBRID PDO and PHP drivers (*see [Recipies](#recipes) below*), create the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database, and automatically configure CUBRID HA environment.
+Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), CUBRID PDO and PHP drivers (*see [Recipies](#recipes) below*), [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager), create the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) or any number of other user defined databases, and automatically configure CUBRID HA on multi VM environment.
 
 This **cubrid** cookbook is tested on [Vagrant](http://www.cubrid.org/wiki_tutorials/entry/create-a-cubrid-database-vm-with-vagrant-and-chef-cookbook-under-5-minutes) boxes (*see [Platform](#platform) below*).
 
@@ -10,6 +10,7 @@ Tested on:
 
 - Ubuntu 10.04 LTS x86/x64 (Vagrant *[Ubuntu lucid 32](http://files.vagrantup.com/lucid32.box)*, *[Ubuntu lucid 64](http://files.vagrantup.com/lucid64.box)* boxes)
 - Ubuntu 12.04 LTS x86/x64 (Vagrant *[Ubuntu precise 32](http://files.vagrantup.com/precise32.box)*, *[Ubuntu precise 64](http://files.vagrantup.com/precise64.box)* boxes)
+- CentOS 5.6 x64 (Vagrant *[Minimal CentOS 5.6](http://dl.dropbox.com/u/9227672/centos-5.6-x86_64-netinstall-4.1.6.box)* box)
 
 ##Requirements
 
@@ -27,6 +28,7 @@ This cookbook provides the following recipes:
 - **ha**: configures CUBRID HA in multi VM environment.
 - **php_driver**: installs [CUBRID PHP driver](http://www.cubrid.org/wiki_apis/entry/cubrid-php-driver) (*same version as CUBRID Database*).
 - **pdo_cubrid**: installs [CUBRID PDO driver](http://www.cubrid.org/wiki_apis/entry/cubrid-pdo-driver) (*same version as CUBRID Database, except when CUBRID 8.4.1 is installed in which case PDO driver 8.4.0 is installed as they are compatible*).
+- **web_manager**: installs [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager).
 
 ## Attributes
 
@@ -160,6 +162,31 @@ set['cubrid']['php_ext_conf']
 # the directives which should be placed in cubrid.ini files; these are populate to cubrid.ini.erb template of this cookbook.
 set['cubrid']['php_directives']
 ```
+
+### attributes/web_manager.rb
+
+```
+# the default version of CUBRID to install
+default['cubrid']['version']
+# the full version of CUBRID including the build number
+set['cubrid']['cwm_full_version']
+# the architecture of CUBRID binaries to install based on the current system architecture
+set['cubrid']['arch']
+
+# the name of the directory where the archive is extracted
+set['cubrid']['cwm_dirname']
+# the file name of the archive to download
+set['cubrid']['cwm_filename']
+
+# the full URL of the TAR archive to download
+set['cubrid']['cwm_tar_url']
+
+# the home directory of a Vagrant user
+default['cubrid']['user_home_dir']
+# the target directory to install CUBRID
+default['cubrid']['home']
+```
+
 ## Usage
 
 ### CUBRID Database
@@ -279,12 +306,29 @@ This will:
 1. Install CUBRID PHP driver from [PHP PECL Repository](http://pecl.php.net/package/CUBRID) if it is not already installed (*same version as the previously installed CUBRID Database*).
 2. Create */etc/php5/conf.d/cubrid.ini*.
 
+### CUBRID Web Manager
+
+If you also want to install CUBRID Web Manager, use **web_manager** recipe. This recipe depends on the **cubrid::default** recipe.
+
+```
+chef.add_recipe "cubrid::web_manager"
+```
+
+This will:
+
+1. Download CUBRID Web Manager package (`tar.gz`) from [CUBRID SF.net repository](http://sourceforge.net/projects/cubrid/files/) if it is not already installed at */opt/cubrid/share/webmanager*. CWM version will be the same as the main CUBRID Database. If CUBRID 8.4.3 is installed, which comes with built-in CUBRID Web Manager, this recipe will not install CWM.
+2. Stop [CUBRID Manager Server](http://www.cubrid.org/manual/90/en/CUBRID%20Manager%20Server) service.
+3. Extract CWM to */opt/cubrid/*. This will override or add some binaries to */bin*, */conf*, and */share* directories.
+4. Start CUBRID Manager Server service.
+5. Remove the downloaded archive and extracted directory.
+
+After CWM is installed, you can access it at [https://your_vm_ip_address:8282](https://your_vm_ip_address:8282). Notice **HTTPS** and **8282** port are used by default. These and other configurations can be adjusted. See [CUBRID Manager HTTPD Variables](http://www.cubrid.org/wiki_tools/entry/cubrid-manager-httpd-variables). Visit [CWM Wiki](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager) for more information and tutorials.s
+
 ## TODO
 
 1. Test on other **Linux distributions** including Fedora and CentOS.
 2. Add other **CUBRID drivers** support: Python, Perl.
-3. Add [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager) support.
-4. Add [CUBRID Sharding](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) support.
+3. Add [CUBRID Sharding](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) support.
 
 ## License and Authors
 
