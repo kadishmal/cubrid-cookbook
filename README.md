@@ -8,9 +8,11 @@ This **cubrid** cookbook is tested on [Vagrant](http://www.cubrid.org/wiki_tutor
 
 Tested on:
 
-- Ubuntu 10.04 LTS x86/x64 (Vagrant *[Ubuntu lucid 32](http://files.vagrantup.com/lucid32.box)*, *[Ubuntu lucid 64](http://files.vagrantup.com/lucid64.box)* boxes)
-- Ubuntu 12.04 LTS x86/x64 (Vagrant *[Ubuntu precise 32](http://files.vagrantup.com/precise32.box)*, *[Ubuntu precise 64](http://files.vagrantup.com/precise64.box)* boxes)
-- CentOS 5.6 x64 (Vagrant *[Minimal CentOS 5.6](http://dl.dropbox.com/u/9227672/centos-5.6-x86_64-netinstall-4.1.6.box)* box)
+- Ubuntu 10.04 LTS x86/x64 (Vagrant boxes: *[Ubuntu lucid 32](http://files.vagrantup.com/lucid32.box)* (261MB), *[Ubuntu lucid 64](http://files.vagrantup.com/lucid64.box)* (280MB))
+- Ubuntu 12.04 LTS x86/x64 (Vagrant boxes: *[Ubuntu precise 32](http://files.vagrantup.com/precise32.box)* (299MB), *[Ubuntu precise 64](http://files.vagrantup.com/precise64.box)* (323MB))
+- CentOS 6.3 x64 (Vagrant box: *[CentOS 6.3 minimal](https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box)* (310MB))
+
+Chef on CentOS 5.6/6.0 seems to have a [bug ](http://tickets.opscode.com/browse/CHEF-3744). When it's fixed, CentOS 5.6/6.0 will be supported in **cubrid-cookbook**.
 
 ##Requirements
 
@@ -217,6 +219,7 @@ This will:
 4. Remove the downloaded archive.
 5. Setup the startup script for a user to auto set environmental variables when the user logs in to the system.
 6. Start CUBRID Service.
+7. When installed on CentOS, this **default** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **default** recipe will add `ACCEPT` rules for CUBRID ports (*but not all; HA port will be opened by **ha** recipe, Web Manager port by **web_manager** recipe*) such as **30000:30100**, **33000:33100**, **8001, 8002**, **1523**. Detailed explanation of all ports used by CUBRID can be found at [http://www.cubrid.org/port_iptables_configuration](http://www.cubrid.org/port_iptables_configuration).
 
 ### CUBRID demodb database
 
@@ -259,6 +262,7 @@ This will:
 6. Update *conf/cubrid_ha.conf* with new configurations for CUBRID HA.
 7. Restart CUBRID Service.
 8. Start [CUBRID Heartbeat](http://www.cubrid.org/manual/843/en/Utilities%20of%20cubrid%20heartbeat).
+9. When installed on CentOS, this **ha** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **ha** recipe will add an `ACCEPT` rule for CUBRID HA port which is **59901** by default.
 
 ### Create new databases
 
@@ -321,8 +325,11 @@ This will:
 3. Extract CWM to */opt/cubrid/*. This will override or add some binaries to */bin*, */conf*, and */share* directories.
 4. Start CUBRID Manager Server service.
 5. Remove the downloaded archive and extracted directory.
+6. When installed on CentOS, this **web_manager** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **web_manager** recipe will add an `ACCEPT` rule for CUBRID Web Manager port which is **8282** by default.
 
-After CWM is installed, you can access it at [https://your_vm_ip_address:8282](https://your_vm_ip_address:8282). Notice **HTTPS** and **8282** port are used by default. These and other configurations can be adjusted. See [CUBRID Manager HTTPD Variables](http://www.cubrid.org/wiki_tools/entry/cubrid-manager-httpd-variables). Visit [CWM Wiki](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager) for more information and tutorials.s
+After CWM is installed, you can access it at [https://your_vm_ip_address:8282](https://your_vm_ip_address:8282). Notice **HTTPS** and **8282** port are used by default. These and other configurations can be adjusted. See [CUBRID Manager HTTPD Variables](http://www.cubrid.org/wiki_tools/entry/cubrid-manager-httpd-variables).
+
+The default username and password to connect to CUBRID Manager Server are **admin/admin**. Once you login for the first time, CWM will prompt you to change the password. Visit [CWM Wiki](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager) for more information and tutorials.
 
 ## TODO
 

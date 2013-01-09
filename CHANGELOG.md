@@ -2,6 +2,15 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 1.5.1
+
+- New: auto configure iptables for CentOS support. Tested on CentOS 6.3 x64.
+- New: added CentOS support to pdo_cubrid and php_driver recipes. Tested on CentOS 6.3 x64.
+- Fix: CWM_EXTRACT_DIR_NAME is already relative to the root. Removed USER_HOME_DIR.
+- Fix: remove "sudo" from "ha" recipe as it breaks on CentOS.
+- Ref: add a new line to the end of the file.
+- Doc: updated README.
+
 ## 1.5.0
 
 - New: added CUBRID Web Manager support through **web_manager** recipe.
