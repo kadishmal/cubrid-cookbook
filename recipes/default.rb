@@ -68,3 +68,25 @@ end
 execute "cubrid service start" do
   user "vagrant"
 end
+
+# On CentOS/RedHat/Fedora iptables REJECTs all external connection to most ports including those used to conenct to CUBRID.
+# We need to open CUBRID-only ports.
+if platform?("centos", "fedora", "redhat")
+  # Detailed explanation of all ports used below can be found at http://www.cubrid.org/port_iptables_configuration.
+  # Port 1523 is for CUBRID Master process.
+  execute "iptables -I INPUT 1 -p tcp -m tcp --dport 1523 -j ACCEPT" do
+    only_if "test -f /sbin/iptables"
+  end
+  # Ports 30000 through 30100 can be used if configured to connect to CUBRID Broker.
+  execute "iptables -I INPUT 1 -p tcp -m tcp --dport 30000:30100 -j ACCEPT" do
+    only_if "test -f /sbin/iptables"
+  end
+  # Ports 33000 through 33100 can be used if configured to connect to CUBRID Broker.
+  execute "iptables -I INPUT 1 -p tcp -m tcp --dport 33000:33100 -j ACCEPT" do
+    only_if "test -f /sbin/iptables"
+  end
+  # Ports 8001 and 8002 are used to connect to CUBRID Manager Server by CUBRID Tools like CUBRID Manager or CUBRID Query Browser.
+  execute "iptables -I INPUT 1 -p tcp -m tcp --dport 8001:8002 -j ACCEPT" do
+    only_if "test -f /sbin/iptables"
+  end
+end

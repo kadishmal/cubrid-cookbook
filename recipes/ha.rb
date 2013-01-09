@@ -40,6 +40,16 @@ if !node['cubrid']['ha_hosts'].empty?
 		end
 	end
 
+	# On CentOS/RedHat/Fedora iptables REJECTs all external connection to most ports including those used to conenct to CUBRID.
+	# We need to open CUBRID HA port only.
+	if platform?("centos", "fedora", "redhat")
+	  # Detailed explanation of all ports used below can be found at http://www.cubrid.org/port_iptables_configuration.
+	  # Port 59901 is CUBRID HA port.
+	  execute "iptables -I INPUT 1 -p udp -m udp --dport 59901 -j ACCEPT" do
+	    only_if "test -f /sbin/iptables"
+	  end
+	end
+
 	# update cubrid_ha.conf
 	template HA_CONF do
 	  source "cubrid_ha.conf.erb"
