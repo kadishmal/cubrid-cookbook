@@ -33,8 +33,9 @@ if !node['cubrid']['ha_hosts'].empty?
     end
 	end
 
+	# Add host and IP information to /etc/hosts file.
 	node['cubrid']['ha_hosts'].each do |host, ip|
-		execute "sudo sed -i '$a #{ip} #{host}' /etc/hosts" do
+		execute "sed -i '$a #{ip} #{host}' /etc/hosts" do
 			not_if "egrep '\b#{host}\b' /etc/hosts"
 		end
 	end
