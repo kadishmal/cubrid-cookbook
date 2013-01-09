@@ -13,6 +13,23 @@ include_recipe "cubrid"
 CUBRID_PDO_INSTALLED = "pecl list | egrep '^PDO_CUBRID\s+#{node['cubrid']['pdo_version']}'"
 CUBRID_PDO_ENABLED = "php -i | grep 'Client API version => #{node['cubrid']['pdo_version']}'"
 
+# PHP 5.3.3 installed via YUM seems to be missing "libgcrypt-devel" library which is required to build PECL packages.
+# See http://jira.cubrid.org/browse/APIS-414
+node['cubrid']['php533_deps'].each do |pkg|
+	package pkg do
+	  action :install
+	  only_if "php --version | grep 'PHP 5.3.3'"
+	end
+end
+
+# Also, when PHP is installed as a "package" (default), it get's installed from YUM. In this case
+# PHP is configured with "--enable-pdo=shared" which means PDO module must be installed separately.
+# See http://jira.cubrid.org/browse/APIS-415.
+package "php-pdo" do
+  action :install
+  only_if "php -i | grep 'enable-pdo=shared'"
+end
+
 execute "echo '#{node['cubrid']['home']}' | pecl install #{node['cubrid']['pdo_package']}" do
   not_if "#{CUBRID_PDO_INSTALLED}"
 end
