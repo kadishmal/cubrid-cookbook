@@ -2,7 +2,12 @@
 
 Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), CUBRID PDO and PHP drivers (*see [Recipies](#recipes) below*), [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager), create the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) or any number of other user defined databases, and automatically configure CUBRID HA on multi VM environment.
 
-This **cubrid** cookbook is tested on [Vagrant](http://www.cubrid.org/wiki_tutorials/entry/create-a-cubrid-database-vm-with-vagrant-and-chef-cookbook-under-5-minutes) boxes (*see [Platform](#platform) below*).
+This **cubrid** cookbook is tested on [Vagrant](http://www.vagrantup.com/) boxes (*see [Platform](#platform) below*).
+
+For those familiar with Vagrant, the following tutorials will help you to quickly get up and running with **cubrid** cookbook:
+
+- [Create a CUBRID Database VM with Vagrant and Chef Cookbook under 5 minutes](http://www.cubrid.org/wiki_tutorials/entry/create-a-cubrid-database-vm-with-vagrant-and-chef-cookbook-under-5-minutes).
+- [Configure CUBRID HA with Vagrant and Chef Cookbook under 4 minutes](http://www.cubrid.org/wiki_tutorials/entry/configure-cubrid-ha-with-vagrant-and-chef-cookbook-under-4-minutes).
 
 ## Platform
 
@@ -12,7 +17,7 @@ Tested on:
 - Ubuntu 12.04 LTS x86/x64 (Vagrant boxes: *[Ubuntu precise 32](http://files.vagrantup.com/precise32.box)* (299MB), *[Ubuntu precise 64](http://files.vagrantup.com/precise64.box)* (323MB))
 - CentOS 6.3 x64 (Vagrant box: *[CentOS 6.3 minimal](https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box)* (310MB))
 
-Chef on CentOS 5.6/6.0 seems to have a [bug ](http://tickets.opscode.com/browse/CHEF-3744). When it's fixed, CentOS 5.6/6.0 will be supported in **cubrid-cookbook**.
+Chef on CentOS 5.6/6.0 seems to have a [bug ](http://tickets.opscode.com/browse/CHEF-3744). When it's fixed, CentOS 5.6/6.0 will be supported in **cubrid** cookbook.
 
 ##Requirements
 
