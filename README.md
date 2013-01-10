@@ -23,7 +23,7 @@ Chef on CentOS 5.6/6.0 seems to have a [bug ](http://tickets.opscode.com/browse/
 
 This **cubrid** cookbook has the following dependencies:
 
-- Chef 0.14+. Make sure you have the latest version of Chef. [Update](http://wiki.opscode.com/display/chef/Upgrading+Chef+0.10.x+to+the+newest+version+of+Chef) if necessary.
+- Chef 10.14+. Make sure you have the latest version of Chef. [Update](http://wiki.opscode.com/display/chef/Upgrading+Chef+0.10.x+to+the+newest+version+of+Chef) if necessary.
 - [build-essential](http://community.opscode.com/cookbooks/build-essential) and [php](http://community.opscode.com/cookbooks/php) cookbooks for **pdo_cubrid** and **php_driver** recipes.
 
 ## Recipes
