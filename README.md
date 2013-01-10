@@ -1,13 +1,13 @@
 ## Description
 
-Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), CUBRID PDO and PHP drivers (*see [Recipies](#recipes) below*), [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager), create the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) or any number of other user defined databases, and automatically configure CUBRID HA on multi VM environment.
+Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), CUBRID PDO, PHP, and Python drivers (*see [Recipies](#recipes) below*), [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager), create the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) or any number of other user defined databases, and automatically configure CUBRID HA on multi VM environment.
 
 This **cubrid** cookbook is tested on [Vagrant](http://www.vagrantup.com/) boxes (*see [Platform](#platform) below*).
 
 For those familiar with Vagrant, the following tutorials will help you to quickly get up and running with **cubrid** cookbook:
 
-- [Create a CUBRID Database VM with Vagrant and Chef Cookbook under 5 minutes](http://www.cubrid.org/wiki_tutorials/entry/create-a-cubrid-database-vm-with-vagrant-and-chef-cookbook-under-5-minutes).
-- [Configure CUBRID HA with Vagrant and Chef Cookbook under 4 minutes](http://www.cubrid.org/wiki_tutorials/entry/configure-cubrid-ha-with-vagrant-and-chef-cookbook-under-4-minutes).
+- [Create a CUBRID Database VM with Vagrant and Chef Cookbook under 5 minutes](http://www.cubrid.org/wiki_tutorials/entry/create-a-cubrid-database-vm-with-vagrant-and-chef-cookbook-under-5-minutes)
+- [Configure CUBRID HA with Vagrant and Chef Cookbook under 4 minutes](http://www.cubrid.org/wiki_tutorials/entry/configure-cubrid-ha-with-vagrant-and-chef-cookbook-under-4-minutes)
 
 ## Platform
 
@@ -23,7 +23,7 @@ Chef on CentOS 5.6/6.0 seems to have a [bug ](http://tickets.opscode.com/browse/
 
 This **cubrid** cookbook has the following dependencies:
 
-- Chef 0.10.10+. Make sure you have the latest version of Chef. [Update](http://wiki.opscode.com/display/chef/Upgrading+Chef+0.10.x+to+the+newest+version+of+Chef) if necessary.
+- Chef 0.14+. Make sure you have the latest version of Chef. [Update](http://wiki.opscode.com/display/chef/Upgrading+Chef+0.10.x+to+the+newest+version+of+Chef) if necessary.
 - [build-essential](http://community.opscode.com/cookbooks/build-essential) and [php](http://community.opscode.com/cookbooks/php) cookbooks for **pdo_cubrid** and **php_driver** recipes.
 
 ## Recipes
@@ -35,6 +35,7 @@ This cookbook provides the following recipes:
 - **ha**: configures CUBRID HA in multi VM environment.
 - **php_driver**: installs [CUBRID PHP driver](http://www.cubrid.org/wiki_apis/entry/cubrid-php-driver) (*same version as CUBRID Database*).
 - **pdo_cubrid**: installs [CUBRID PDO driver](http://www.cubrid.org/wiki_apis/entry/cubrid-pdo-driver) (*same version as CUBRID Database, except when CUBRID 8.4.1 is installed in which case PDO driver 8.4.0 is installed as they are compatible*).
+- **python_driver**: installs [CUBRID Python driver](http://www.cubrid.org/wiki_apis/entry/cubrid-python-driver) (*same version as CUBRID Database*).
 - **web_manager**: installs [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager).
 
 ## Attributes
@@ -168,6 +169,18 @@ set['cubrid']['php_ext_conf_dir']
 set['cubrid']['php_ext_conf']
 # the directives which should be placed in cubrid.ini files; these are populate to cubrid.ini.erb template of this cookbook.
 set['cubrid']['php_directives']
+```
+
+### attributes/python_driver.rb
+
+```
+# the default version of CUBRID to install
+default['cubrid']['version']
+
+# The version of a CUBRID Python driver to install from PIP.
+set['cubrid']['python_version']
+# The name of a PIP package to install CUBRID Python driver.
+set['cubrid']['python_package']
 ```
 
 ### attributes/web_manager.rb
@@ -315,6 +328,18 @@ This will:
 1. Install CUBRID PHP driver from [PHP PECL Repository](http://pecl.php.net/package/CUBRID) if it is not already installed (*same version as the previously installed CUBRID Database*).
 2. Create */etc/php5/conf.d/cubrid.ini*.
 
+### CUBRID Python driver
+
+If you also want to install CUBRID Python driver, use **python_driver** recipe. This recipe depends on the **cubrid::default** and **python::default** recipes.
+
+```
+chef.add_recipe "cubrid::python_driver"
+```
+
+This will:
+
+1. Install CUBRID Python driver using [pip](http://www.pip-installer.org/en/) from [PYPI](http://pecl.php.net/package/CUBRID) if it is not already installed (*same version as the previously installed CUBRID Database*).
+
 ### CUBRID Web Manager
 
 If you also want to install CUBRID Web Manager, use **web_manager** recipe. This recipe depends on the **cubrid::default** recipe.
@@ -338,9 +363,10 @@ The default username and password to connect to CUBRID Manager Server are **admi
 
 ## TODO
 
-1. Test on other **Linux distributions** including Fedora and CentOS.
-2. Add other **CUBRID drivers** support: Python, Perl.
+1. Test on other **Linux distributions** including Fedora.
+2. Add other **CUBRID drivers** support: Perl.
 3. Add [CUBRID Sharding](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) support.
+4. Test without Vagrant, on a plain Linux + Chef Solo.
 
 ## License and Authors
 

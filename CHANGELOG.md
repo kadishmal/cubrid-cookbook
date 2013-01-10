@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 1.6.0
+
+- New: added *python_driver* recipe to install CUBRID Python driver.
+- Doc: added tutorial links.
+- Doc: updated README.
+
 ## 1.5.1
 
 - New: auto configure iptables for CentOS support. Tested on CentOS 6.3 x64.
