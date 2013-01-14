@@ -37,8 +37,33 @@ action :create do
     not_if "test -f #{DIR}/#{DB}"
   end
 
+  # Make sure the database is stopped. It may be started if it was
+  # already created, eg. by "demodb" recipe.
+  execute "cubrid server stop #{DB}" do
+    user "vagrant"
+  end
+
+  # Add a new database user or set a password.
+  if new_resource.dbuser == "dba" || new_resource.dbuser == ""
+    # By default "dba" use has no password. But you can set one.
+    # Check if the user has set a password.
+    if new_resource.password != ""
+      # Change the password.
+      execute "csql -S -u dba #{DB} -c \"ALTER USER dba PASSWORD '#{new_resource.password}'\""
+    end
+  else
+    # "dba" is a default user for any database. But user can add more users.
+    # Check if the user has set a password
+    if new_resource.password != ""
+      # Create a new user.
+      execute "csql -S -u dba #{DB} -c \"CREATE USER #{new_resource.dbuser} PASSWORD '#{new_resource.password}'\"" do
+        only_if "csql -S -u dba #{DB} -c \"SELECT * FROM db_user WHERE STRCMP(\"name\", '#{new_resource.dbuser}') = 0;\" | grep 'no results'"
+      end
+    end
+  end
+
   if new_resource.autostart
-    # start this database
+    # Start this database.
     execute "cubrid server start #{DB}" do
       user "vagrant"
     end
