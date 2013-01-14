@@ -8,7 +8,7 @@
 #
 
 # Latest build numbers for each CUBRID Python version in the form of 'version'=>'build_number'.
-build_numbers = {'9.0.0' => '0001', '8.4.3' => '0001', '8.4.1' => '0001', '8.4.0' => '0001'}
+build_numbers = {'9.0.0' => '0001', '8.4.3' => '0002', '8.4.1' => '0001', '8.4.0' => '0001'}
 
 # The default version of CUBRID to install.
 default['cubrid']['version'] = "9.0.0"
