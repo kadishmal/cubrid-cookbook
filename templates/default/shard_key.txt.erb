@@ -1,0 +1,36 @@
+#
+# Cookbook Name:: cubrid
+# Templates:: shard_keys.txt
+#
+[%shard_key_column]
+#min	max	shard_id
+
+# By default SHARD_KEY_MODULAR = 256
+<% shard_key_modular = 256 -%>
+<% shard_key = 0 -%>
+<% shard_key_range = 31 -%>
+<% len = node['cubrid']['shard_hosts'].length - 1 -%>
+
+<% while shard_key < shard_key_modular -%>
+<% for i in 0..len do -%>
+<% from = shard_key -%>
+<% shard_key += shard_key_range -%>
+<%= "#{from}\t#{shard_key}\t#{i}" %>
+<% shard_key += 1 -%>
+<% end -%>
+<% end -%>
+
+# The above will output something like based on the number of hosts user has entered.
+#0	31	0
+#32	63 	1
+#64	95	2
+#96	127	3
+#128	159	0
+#160	191	1
+#192	223	2
+#224	255	3
+
+#[%another_key_column]
+#min    max	shard_id
+#0	127	0
+#128	255	1
