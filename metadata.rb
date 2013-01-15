@@ -11,7 +11,7 @@ maintainer_email "kadishmal@gmail.com"
 license          "MIT"
 description      "Installs/Configures cubrid"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "1.6.0"
+version          "1.7.0"
 
 depends          "build-essential"
 depends          "php"

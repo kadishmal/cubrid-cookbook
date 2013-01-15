@@ -2,6 +2,17 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 1.7.0
+
+- New: updated 8.4.3 Python driver from v8.4.3.0001 to v8.4.3.0002.
+- New: add "CREATE/ALTER USER" routine to database provider to add a new user when create a new database.
+- New: added CUBRID SHARD support. Requires CUBRID 8.4.3+.
+- Enh: allow to set a custom SHARD Broker port.
+- Enh: automatically open SHARD broker port in iptables on CentOS.
+- Enh: check if shard_hosts is defined by a user.
+- Doc: fixed the typo.
+- Com: updated the comments.
+
 ## 1.6.0
 
 - New: added *python_driver* recipe to install CUBRID Python driver.
