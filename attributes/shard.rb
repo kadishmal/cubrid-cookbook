@@ -31,6 +31,8 @@ default['cubrid']['shard_user_password'] = "shard123"
 # Each of those nodes can be configured in HA for auto failover among 3 other HA nodes.
 # In the above case shard1node1 is a master, while shard1node2 and shard1node3 are slave nodes.
 default['cubrid']['shard_hosts'] = []
+# default SHARD Broker port
+default['cubrid']['shard_broker_port'] = 45011
 
 # the configurations directory
 set['cubrid']['conf_dir'] = "#{node['cubrid']['home']}/conf"

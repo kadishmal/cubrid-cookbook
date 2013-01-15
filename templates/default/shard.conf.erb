@@ -24,10 +24,10 @@ ADMIN_LOG_FILE          =log/broker/cubrid_broker.log
 
 [%shard]
 SERVICE                 =ON
-BROKER_PORT             =45011
+BROKER_PORT             =<%= "#{node['cubrid']['shard_broker_port']}" %>
 MIN_NUM_APPL_SERVER     =1
 MAX_NUM_APPL_SERVER     =1
-APPL_SERVER_SHM_ID      =45011
+APPL_SERVER_SHM_ID      =<%= "#{node['cubrid']['shard_broker_port']}" %>
 LOG_DIR                 =log/broker/sql_log
 ERROR_LOG_DIR           =log/broker/error_log
 SQL_LOG                 =ON
