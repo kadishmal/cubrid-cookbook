@@ -9,7 +9,7 @@
 
 include_recipe "cubrid"
 
-if node['cubrid']['shard_db'] != ""
+if node['cubrid']['shard_db'] != "" && !node['cubrid']['shard_hosts'].empty?
 	CUBRID_CONF = "#{node['cubrid']['conf']}"
 	SHARD_CONF = "#{node['cubrid']['shard_conf']}"
 	SHARD_CONNECTION_TXT = "#{node['cubrid']['shard_connection_txt']}"
