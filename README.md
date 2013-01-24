@@ -1,6 +1,6 @@
 ## Description
 
-Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), CUBRID PDO, PHP, and Python drivers (*see [Recipies](#recipes) below*), [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager), create the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) or any number of other user defined databases, and automatically configure CUBRID HA and [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) on multi VM environment.
+Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), CUBRID PDO, PHP, Perl, and Python drivers (*see [Recipies](#recipes) below*), [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager), create the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) or any number of other user defined databases, automatically configure CUBRID HA and [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) in multi VM environment.
 
 This **cubrid** cookbook is tested on [Vagrant](http://www.vagrantup.com/) boxes (*see [Platform](#platform) below*).
 
@@ -8,6 +8,7 @@ For those familiar with Vagrant, the following tutorials will help you to quickl
 
 - [Create a CUBRID Database VM with Vagrant and Chef Cookbook under 5 minutes](http://www.cubrid.org/wiki_tutorials/entry/create-a-cubrid-database-vm-with-vagrant-and-chef-cookbook-under-5-minutes)
 - [Configure CUBRID HA with Vagrant and Chef Cookbook under 4 minutes](http://www.cubrid.org/wiki_tutorials/entry/configure-cubrid-ha-with-vagrant-and-chef-cookbook-under-4-minutes)
+- [Configure CUBRID SHARD with Vagrant and Chef Cookbook under 2 minutes](http://www.cubrid.org/wiki_tutorials/entry/configure-cubrid-shard-with-vagrant-and-chef-cookbook-under-2-minutes)
 
 ## Platform
 
@@ -33,8 +34,10 @@ This cookbook provides the following recipes:
 - **cubrid**: installs the specified version of CUBRID Database. Available versions: 8.4.1, 8.4.3, 9.0.0  (*default*).
 - **demodb**: creates CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database.
 - **ha**: configures CUBRID HA in multi VM environment.
-- **php_driver**: installs [CUBRID PHP driver](http://www.cubrid.org/wiki_apis/entry/cubrid-php-driver) (*same version as CUBRID Database*).
+- **new_dbs**: installs one or more databases defined by a user.
 - **pdo_cubrid**: installs [CUBRID PDO driver](http://www.cubrid.org/wiki_apis/entry/cubrid-pdo-driver) (*same version as CUBRID Database, except when CUBRID 8.4.1 is installed in which case PDO driver 8.4.0 is installed as they are compatible*).
+- **perl_driver**: installs [CUBRID Perl driver](http://www.cubrid.org/wiki_apis/entry/cubrid-perl-driver) (*same version as CUBRID Database*).
+- **php_driver**: installs [CUBRID PHP driver](http://www.cubrid.org/wiki_apis/entry/cubrid-php-driver) (*same version as CUBRID Database*).
 - **python_driver**: installs [CUBRID Python driver](http://www.cubrid.org/wiki_apis/entry/cubrid-python-driver) (*same version as CUBRID Database*).
 - **shard**: configures [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) in multi VM environment.
 - **web_manager**: installs [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager).
@@ -150,6 +153,15 @@ set['cubrid']['php_ext_conf_dir']
 set['cubrid']['pdo_ext_conf']
 # the directives which should be placed in pdo_cubrid.ini files; these are populate to pdo_cubrid.ini.erb template of this cookbook.
 set['cubrid']['pdo_directives']
+```
+
+### attributes/perl_driver.rb
+
+```
+# The version of a CUBRID Perl driver to install from CPAN.
+set['cubrid']['perl_version']
+# The file name of the the package to install.
+set['cubrid']['perl_filename']
 ```
 
 ### attributes/php_driver.rb
@@ -349,6 +361,19 @@ This will:
 
 **Note**: this recipe as well as **php_driver** do not restart your Web server automatically because they do not know which Web server you use. So, if necessary, restart your Web server manually.
 
+### CUBRID Perl driver
+
+If you also want to install CUBRID Perl driver, use **perl_driver** recipe. This recipe depends on the **cubrid::default** and **perl::default** recipes.
+
+```
+chef.add_recipe "cubrid::perl_driver"
+```
+
+This will:
+
+1. Install [DBI](http://dbi.perl.org/) (Database Independent Interface) module which the CUBRID Perl driver is based on.
+2. Install CUBRID Perl driver from [CPAN Repository](http://search.cpan.org/~cubrid/) if it is not already installed (*same version as the previously installed CUBRID Database*).
+
 ### CUBRID PHP driver
 
 If you also want to install CUBRID PHP driver, use **php_driver** recipe. This recipe depends on the **cubrid::default** recipe.
@@ -430,15 +455,15 @@ The default username and password to connect to CUBRID Manager Server are **admi
 
 ## TODO
 
-1. Test on other **Linux distributions** including Fedora.
-2. Add other **CUBRID drivers** support: Perl.
-3. Allow user to specify custom port for CUBRID HA.
-4. Test without Vagrant, on a plain Linux + Chef Solo.
-5. Validate the database name.
-6. Add CUBRID Django port.
+- Test on other **Linux distributions** including Fedora.
+- Allow users to specify custom port for CUBRID HA.
+- Test on a plain Linux + Chef Solo without Vagrant.
+- Validate the database name.
+- Add CUBRID Django port.
+- Check if it's possible to add MySQL as a backend to CUBRID SHARD.
 
 ## License and Authors
 
-- Esen Sagynov (<kadishmal@gmail.com>)
-
 Distributed under [MIT License](http://en.wikipedia.org/wiki/MIT_License).
+
+- Esen Sagynov (<kadishmal@gmail.com>)
