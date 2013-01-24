@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: cubrid
-# Recipe:: php_cubrid
+# Recipe:: php_driver
 #
 # Copyright 2012, Esen Sagynov <kadishmal@gmail.com>
 #
