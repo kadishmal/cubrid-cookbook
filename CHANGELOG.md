@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 1.8.0
+
+- New: added the Perl driver recipe.
+- Com: updated the comments.
+- Doc: updated README.
+
 ## 1.7.0
 
 - New: updated 8.4.3 Python driver from v8.4.3.0001 to v8.4.3.0002.
