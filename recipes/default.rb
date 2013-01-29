@@ -86,7 +86,7 @@ if platform?("centos", "fedora", "redhat")
     only_if "test -f /sbin/iptables"
   end
   # Ports 8001 and 8002 are used to connect to CUBRID Manager Server by CUBRID Tools like CUBRID Manager or CUBRID Query Browser.
-  execute "iptables -I INPUT 1 -p tcp -m tcp --dport 8001:8002 -j ACCEPT" do
+  execute "iptables -I INPUT 1 -p tcp -m tcp --dport 8001:8003 -j ACCEPT" do
     only_if "test -f /sbin/iptables"
   end
 end
