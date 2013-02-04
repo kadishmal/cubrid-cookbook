@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 1.9.0
+
+- New: Added CentOS 5.6 and 6.0 support.
+- Enh: CUBRID Manager Server in 8.4.3 also needs 8003 port open.
+- Doc: updated README.
+
 ## 1.8.0
 
 - New: added the Perl driver recipe.
