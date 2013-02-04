@@ -16,16 +16,21 @@ Tested on:
 
 - Ubuntu 10.04 LTS x86/x64 (Vagrant boxes: *[Ubuntu lucid 32](http://files.vagrantup.com/lucid32.box)* (261MB), *[Ubuntu lucid 64](http://files.vagrantup.com/lucid64.box)* (280MB))
 - Ubuntu 12.04 LTS x86/x64 (Vagrant boxes: *[Ubuntu precise 32](http://files.vagrantup.com/precise32.box)* (299MB), *[Ubuntu precise 64](http://files.vagrantup.com/precise64.box)* (323MB))
+- CentOS 5.6 x64 (Vagrant box: *[CentOS 5.6 minimal](http://dl.dropbox.com/u/9227672/centos-5.6-x86_64-netinstall-4.1.6.box)* (277MB))
+- CentOS 6.0 x64 (Vagrant box: *[CentOS 6.0 minimal](http://dl.dropbox.com/u/9227672/CentOS-6.0-x86_64-netboot-4.1.6.box)* (362MB))
 - CentOS 6.3 x64 (Vagrant box: *[CentOS 6.3 minimal](https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box)* (310MB))
-
-Chef on CentOS 5.6/6.0 seems to have a [bug ](http://tickets.opscode.com/browse/CHEF-3744). When it's fixed, CentOS 5.6/6.0 will be supported in **cubrid** cookbook.
 
 ##Requirements
 
 This **cubrid** cookbook has the following dependencies:
 
-- Chef 10.14.0+. Make sure you have the latest version of Chef. [Update](http://wiki.opscode.com/display/chef/Upgrading+Chef+0.10.x+to+the+newest+version+of+Chef) if necessary.
-- [build-essential](http://community.opscode.com/cookbooks/build-essential) and [php](http://community.opscode.com/cookbooks/php) cookbooks for **pdo_cubrid** and **php_driver** recipes.
+- Chef 10.14.0+. Make sure you have the latest version of Chef. If necessary, [update](http://wiki.opscode.com/display/chef/Upgrading+Chef+0.10.x+to+the+newest+version+of+Chef) by executing `sudo gem update chef --no-ri --no-rdoc`.
+- Ohai 6.14.0+. Make sure you have the latest version of Ohai. If necessary, [update](http://wiki.opscode.com/display/chef/Ohai+Installation+and+Use) by executing `sudo gem update ohai --no-ri --no-rdoc`.
+- [build-essential](https://github.com/opscode-cookbooks/build-essential) cookbook for PHP, Python, Perl drivers.
+- [yum](https://github.com/opscode-cookbooks/yum) cookbook for **python::package** and **pdo_cubrid** recipes.
+- [php](https://github.com/opscode-cookbooks/php) cookbook for **pdo_cubrid** and **php_driver** recipes.
+- [python](https://github.com/opscode-cookbooks/python) cookbook for **python_driver** recipe.
+- [perl](https://github.com/opscode-cookbooks/perl) cookbook for **perl_driver** recipe.
 
 ## Recipes
 
@@ -190,10 +195,26 @@ set['cubrid']['php_directives']
 # the default version of CUBRID to install
 default['cubrid']['version']
 
+# The defalut Python Development Package required to build Python modules.
+set['cubrid']['python_dev_package'] 
+
 # The version of a CUBRID Python driver to install from PIP.
 set['cubrid']['python_version']
 # The name of a PIP package to install CUBRID Python driver.
 set['cubrid']['python_package']
+
+# the name of the directory where the archive is extracted
+set['cubrid']['python_dirname']
+# The file name of the archive to download.
+set['cubrid']['python_filename']
+
+# The full URL of the TAR archive to download.
+set['cubrid']['python_tar_url']
+
+# The home directory of a Vagrant user.
+default['cubrid']['user_home_dir']
+# The target directory to install CUBRID.
+default['cubrid']['home']
 ```
 
 ### attributes/shard.rb
@@ -283,7 +304,7 @@ This will:
 4. Remove the downloaded archive.
 5. Setup the startup script for a user to auto set environmental variables when the user logs in to the system.
 6. Start CUBRID Service.
-7. When installed on CentOS, this **default** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **default** recipe will add `ACCEPT` rules for CUBRID ports (*but not all; HA port will be opened by **ha** recipe, Web Manager port by **web_manager** recipe*) such as **30000:30100**, **33000:33100**, **8001, 8002**, **1523**. Detailed explanation of all ports used by CUBRID can be found at [http://www.cubrid.org/port_iptables_configuration](http://www.cubrid.org/port_iptables_configuration).
+7. When installed on CentOS, this **default** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **default** recipe will add `ACCEPT` rules for CUBRID ports (*but not all; HA port will be opened by **ha** recipe, Web Manager port by **web_manager** recipe, SHARD port by **shard** recipe*) such as **30000:30100**, **33000:33100**, **8001:8003**, **1523**. Detailed explanation of all ports used by CUBRID can be found at [http://www.cubrid.org/port_iptables_configuration](http://www.cubrid.org/port_iptables_configuration).
 
 ### CUBRID demodb database
 
@@ -356,8 +377,10 @@ chef.add_recipe "cubrid::pdo_cubrid"
 
 This will:
 
-1. Install CUBRID PDO driver from [PHP PECL Repository](http://pecl.php.net/package/PDO_CUBRID) if the PDO driver is not already installed (*same version as the previously installed CUBRID Database*).
-2. Create */etc/php5/conf.d/pdo_cubrid.ini*.
+1. Install the `libgcrypt-devel` dependency library which is required to build PECL packages. In PHP 5.3.3 installed via YUM this library does not get installed by default.
+2. Install `php-pdo` module. If PHP is installed as a "package" (default), it get's installed from YUM. In this case PHP is configured with `--enable-pdo=shared` which means PDO module must be installed separately. See [http://jira.cubrid.org/browse/APIS-415](http://jira.cubrid.org/browse/APIS-415).
+3. Install CUBRID PDO driver from [PHP PECL Repository](http://pecl.php.net/package/PDO_CUBRID) if the PDO driver is not already installed (*same version as the previously installed CUBRID Database*).
+4. Create */etc/php5/conf.d/pdo_cubrid.ini*.
 
 **Note**: this recipe as well as **php_driver** do not restart your Web server automatically because they do not know which Web server you use. So, if necessary, restart your Web server manually.
 
@@ -384,12 +407,23 @@ chef.add_recipe "cubrid::php_driver"
 
 This will:
 
-1. Install CUBRID PHP driver from [PHP PECL Repository](http://pecl.php.net/package/CUBRID) if it is not already installed (*same version as the previously installed CUBRID Database*).
-2. Create */etc/php5/conf.d/cubrid.ini*.
+1. Install the `libgcrypt-devel` dependency library which is required to build PECL packages. In PHP 5.3.3 installed via YUM this library does not get installed by default.
+2. Install CUBRID PHP driver from [PHP PECL Repository](http://pecl.php.net/package/CUBRID) if it is not already installed (*same version as the previously installed CUBRID Database*).
+3. Create */etc/php5/conf.d/cubrid.ini*.
+
+**Note**: this recipe as well as **pdo_cubrid** do not restart your Web server automatically because they do not know which Web server you use. So, if necessary, restart your Web server manually.
 
 ### CUBRID Python driver
 
-If you also want to install CUBRID Python driver, use **python_driver** recipe. This recipe depends on the **cubrid::default** and **python::default** recipes.
+If you also want to install CUBRID Python driver, there are three recipes to choose from:
+
+- **python_driver**: on CentOS 5.x installs the CUBRID Python driver using the *python_driver_source* recipe, otherwise using the *python_driver_pip* recipe.
+- **python_driver_pip**: installs pip, virtualenv, and the CUBRID Python driver. pip [requires](http://pypi.python.org/pypi/pip) at least Python 2.5 installed, therefore recommended on CentOS 6+/Ubuntu 10+.
+- **python_driver_source**: installs the Python driver from source code. Works on Python 2.4+, therefore recommended on CentOS 5.x. 
+
+#### python_driver
+
+If you have no prefereces, use the **python_driver** recipe which will detect the preferred recipe for you to install the Python driver. This recipe depends on the **cubrid::default** recipe.
 
 ```
 chef.add_recipe "cubrid::python_driver"
@@ -397,7 +431,42 @@ chef.add_recipe "cubrid::python_driver"
 
 This will:
 
-1. Install CUBRID Python driver using [pip](http://www.pip-installer.org/en/) from [PYPI](http://pecl.php.net/package/CUBRID) if it is not already installed (*same version as the previously installed CUBRID Database*).
+1. On CentOS 5.x include the **python_driver_source** recipe, otherwise include the **python_driver_pip** recipe.
+
+#### python_driver_pip
+
+*Recommended on **non**-CentOS 5.x.*
+
+Use the **python_driver_pip** recipe to install the Python driver via pip. This recipe depends on the **cubrid::default** and **python::default** recipes.
+
+```
+chef.add_recipe "cubrid::python_driver_pip"
+```
+
+This will:
+
+1. Include Python cookbook which installs Python 2.5+, pip, and virtualenv.
+2. Install CUBRID Python driver using [pip](http://www.pip-installer.org/en/) from [PYPI](http://pecl.php.net/package/CUBRID) if it is not already installed (*same version as the previously installed CUBRID Database*).
+
+#### python_driver_source
+
+*Recommended on CentOS 5.x.*
+
+Use the **python_driver_source** recipe to install the Python driver from the source code. This recipe depends on the **cubrid::default** and **build-essential::default** recipes.
+
+```
+chef.add_recipe "cubrid::python_driver_source"
+```
+
+This will:
+
+1. Install the Python Development Package.
+2. Download the CUBRID Python driver source archive from [SF.net](https://sourceforge.net/projects/cubrid/files/CUBRID-Drivers/Python_Driver/).
+3. Extract it.
+4. Build and install the driver library.
+5. Remove the extracted directory and the downloaded archive.
+
+**Note:** this **python_driver_source** recipe does not install pip and virtualenv. If necessary, use **python** cookbook to install them.
 
 ### CUBRID SHARD
 
@@ -455,6 +524,8 @@ The default username and password to connect to CUBRID Manager Server are **admi
 
 ## TODO
 
+- Setting attributes without specifying a precedence is deprecated and will be
+removed in Chef 11.0. To set attributes at normal precedence, change code from `node["key"] = "value"` to `node.set["key"] = "value"`.
 - Test on other **Linux distributions** including Fedora.
 - Allow users to specify custom port for CUBRID HA.
 - Test on a plain Linux + Chef Solo without Vagrant.
