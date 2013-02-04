@@ -25,7 +25,16 @@ end
 # Also, when PHP is installed as a "package" (default), it get's installed from YUM. In this case
 # PHP is configured with "--enable-pdo=shared" which means PDO module must be installed separately.
 # See http://jira.cubrid.org/browse/APIS-415.
-package "php-pdo" do
+major_version = node['platform_version'].split('.').first.to_i
+
+if platform_family?('rhel') && major_version < 6
+  include_recipe 'yum::epel'
+  pdo_pkg = "php53-pdo"
+else
+  pdo_pkg = "php-pdo"
+end
+
+package pdo_pkg do
   action :install
   only_if "php -i | grep 'enable-pdo=shared'"
 end
