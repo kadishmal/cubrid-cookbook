@@ -2,6 +2,15 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 2.0.0
+
+- Enh: Improved the "default" recipe to work on vanilla Linux as well as Vagrant.
+- Enh: Improved the "demodb" recipe to work on vanilla Linux as well as Vagrant.
+- Enh: Improved the "ha" recipe to work on vanilla Linux as well as Vagrant.
+- Enh: Improved the "python_driver_source" recipe to work on vanilla Linux as well as Vagrant.
+- Enh: Improved the "shard" recipe to work on vanilla Linux as well as Vagrant.
+- Enh: Improved the "web_manager" recipe to work on vanilla Linux as well as Vagrant.
+
 ## 1.9.0
 
 - New: Added CentOS 5.6 and 6.0 support.
