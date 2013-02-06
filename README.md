@@ -2,7 +2,7 @@
 
 Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), CUBRID PDO, PHP, Perl, and Python drivers (*see [Recipies](#recipes) below*), [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager), create the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) or any number of other user defined databases, automatically configure CUBRID HA and [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) in multi VM environment.
 
-This **cubrid** cookbook is tested on [Vagrant](http://www.vagrantup.com/) boxes (*see [Platform](#platform) below*).
+This **cubrid** cookbook is tested on [Vagrant](http://www.vagrantup.com/) boxes as well as plain vanilla Linux (*see [Platform](#platform) below*).
 
 For those familiar with Vagrant, the following tutorials will help you to quickly get up and running with **cubrid** cookbook:
 
@@ -14,11 +14,17 @@ For those familiar with Vagrant, the following tutorials will help you to quickl
 
 Tested on:
 
-- Ubuntu 10.04 LTS x86/x64 (Vagrant boxes: *[Ubuntu lucid 32](http://files.vagrantup.com/lucid32.box)* (261MB), *[Ubuntu lucid 64](http://files.vagrantup.com/lucid64.box)* (280MB))
-- Ubuntu 12.04 LTS x86/x64 (Vagrant boxes: *[Ubuntu precise 32](http://files.vagrantup.com/precise32.box)* (299MB), *[Ubuntu precise 64](http://files.vagrantup.com/precise64.box)* (323MB))
-- CentOS 5.6 x64 (Vagrant box: *[CentOS 5.6 minimal](http://dl.dropbox.com/u/9227672/centos-5.6-x86_64-netinstall-4.1.6.box)* (277MB))
-- CentOS 6.0 x64 (Vagrant box: *[CentOS 6.0 minimal](http://dl.dropbox.com/u/9227672/CentOS-6.0-x86_64-netboot-4.1.6.box)* (362MB))
-- CentOS 6.3 x64 (Vagrant box: *[CentOS 6.3 minimal](https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box)* (310MB))
+- Ubuntu 10.04 LTS x86/x64
+	- Vagrant boxes: *[Ubuntu lucid 32](http://files.vagrantup.com/lucid32.box)* (261MB), *[Ubuntu lucid 64](http://files.vagrantup.com/lucid64.box)* (280MB)
+- Ubuntu 12.04 LTS x86/x64
+	- Official Ubuntu Image: *[Ubuntu 12.04.1 LTS](http://releases.ubuntu.com/precise/ubuntu-12.04.1-server-amd64.iso)* (657MB)
+	- Vagrant boxes: *[Ubuntu precise 32](http://files.vagrantup.com/precise32.box)* (299MB), *[Ubuntu precise 64](http://files.vagrantup.com/precise64.box)* (323MB)
+- CentOS 5.6 x64
+	- Vagrant box: *[CentOS 5.6 minimal](http://dl.dropbox.com/u/9227672/centos-5.6-x86_64-netinstall-4.1.6.box)* (277MB)
+- CentOS 6.0 x64
+	- Vagrant box: *[CentOS 6.0 minimal](http://dl.dropbox.com/u/9227672/CentOS-6.0-x86_64-netboot-4.1.6.box)* (362MB)
+- CentOS 6.3 x64
+	- Vagrant box: *[CentOS 6.3 minimal](https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box)* (310MB)
 
 ##Requirements
 
@@ -524,13 +530,10 @@ The default username and password to connect to CUBRID Manager Server are **admi
 
 ## TODO
 
-- Setting attributes without specifying a precedence is deprecated and will be
-removed in Chef 11.0. To set attributes at normal precedence, change code from `node["key"] = "value"` to `node.set["key"] = "value"`.
-- Test on other **Linux distributions** including Fedora.
+- Test on other Linux distributions including Fedora.
 - Allow users to specify custom port for CUBRID HA.
-- Test on a plain Linux + Chef Solo without Vagrant.
+- Test on a vanilla CentOS.
 - Validate the database name.
-- Add CUBRID Django port.
 - Check if it's possible to add MySQL as a backend to CUBRID SHARD.
 
 ## License and Authors
