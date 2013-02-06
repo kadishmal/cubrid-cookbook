@@ -29,3 +29,7 @@ set['cubrid']['cwm_tar_url'] = "https://sourceforge.net/projects/cubrid/files/CU
 default['cubrid']['user_home_dir'] = "/home/vagrant"
 # the target directory to install CUBRID
 default['cubrid']['home'] = "/opt/cubrid"
+# the configurations directory
+set['cubrid']['conf_dir'] = "#{node['cubrid']['home']}/conf"
+# full path to cm_httpd.conf
+set['cubrid']['cm_httpd_conf'] = "#{node['cubrid']['conf_dir']}/cm_httpd.conf"

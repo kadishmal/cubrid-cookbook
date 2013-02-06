@@ -14,15 +14,11 @@ action :create do
 
   # create a directory for this database
   directory "#{DIR}" do
-    user "vagrant"
-    action :create
     not_if "test -d #{DIR}"
   end
 
   # create a directory to store database logs
   directory "#{LOG_DIR}" do
-    user "vagrant"
-    action :create
     not_if "test -d #{LOG_DIR}"
   end
 
@@ -32,15 +28,8 @@ action :create do
             --log-volume-size=#{node['cubrid']['log_volume_size']} \
             --log-path=#{LOG_DIR} \
             #{DB}" do
-    user "vagrant"
     cwd "#{DIR}"
     not_if "test -f #{DIR}/#{DB}"
-  end
-
-  # Make sure the database is stopped. It may be started if it was
-  # already created, eg. by "demodb" recipe.
-  execute "cubrid server stop #{DB}" do
-    user "vagrant"
   end
 
   # Add a new database user or set a password.
@@ -48,13 +37,19 @@ action :create do
     # By default "dba" use has no password. But you can set one.
     # Check if the user has set a password.
     if new_resource.password != ""
+      # Make sure the database is stopped. It may be started if it was
+      # already created, eg. by "demodb" recipe.
+      execute "cubrid server stop #{DB}"
       # Change the password.
       execute "csql -S -u dba #{DB} -c \"ALTER USER dba PASSWORD '#{new_resource.password}'\""
     end
   else
     # "dba" is a default user for any database. But user can add more users.
-    # Check if the user has set a password
+    # Check if the user has set a password.
     if new_resource.password != ""
+      # Make sure the database is stopped. It may be started if it was
+      # already created, eg. by "demodb" recipe.
+      execute "cubrid server stop #{DB}"
       # Create a new user.
       execute "csql -S -u dba #{DB} -c \"CREATE USER #{new_resource.dbuser} PASSWORD '#{new_resource.password}'\"" do
         only_if "csql -S -u dba #{DB} -c \"SELECT * FROM db_user WHERE STRCMP(\"name\", '#{new_resource.dbuser}') = 0;\" | grep 'no results'"
@@ -64,8 +59,6 @@ action :create do
 
   if new_resource.autostart
     # Start this database.
-    execute "cubrid server start #{DB}" do
-      user "vagrant"
-    end
+    execute "cubrid server start #{DB}"
   end
 end
