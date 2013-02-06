@@ -9,9 +9,9 @@
 include_recipe "cubrid"
 include_recipe "build-essential"
 
-USER_HOME_DIR = node['cubrid']['user_home_dir']
-DIR_NAME = "#{USER_HOME_DIR}/#{node['cubrid']['python_dirname']}"
-FILE_NAME = node['cubrid']['python_filename']
+TEMP_DIR = "/tmp"
+DIR_NAME = "#{TEMP_DIR}/#{node['cubrid']['python_dirname']}"
+DRIVER_FILE = "#{TEMP_DIR}/#{node['cubrid']['python_filename']}"
 
 CUBRID_PYTHON_INSTALLED = "pydoc modules | grep cubrid"
 
@@ -22,7 +22,7 @@ package node['cubrid']['python_dev_package'] do
 end
 
 # Download the source archive.
-remote_file FILE_NAME do
+remote_file DRIVER_FILE do
   source node['cubrid']['python_tar_url']
   mode 0644
   action :create_if_missing
@@ -33,30 +33,27 @@ remote_file FILE_NAME do
 end
 
 # Extract the archive.
-execute "tar -zxf #{FILE_NAME} -C #{USER_HOME_DIR}" do
-  user "vagrant"
-  only_if "test -f #{FILE_NAME}"
-end
-
-# Remove the archive.
-file "#{FILE_NAME}" do
-  action :delete
-  backup false
-  only_if "test -f #{FILE_NAME}"
+execute "tar -zxf #{DRIVER_FILE} -C #{TEMP_DIR}" do
+  only_if "test -f #{DRIVER_FILE}"
 end
 
 # Build the driver.
 execute "python setup.py build" do
-	user 'vagrant'
 	cwd DIR_NAME
 	only_if "test -d #{DIR_NAME}"
 end
 
 # Install the driver.
 execute "python setup.py install" do
-	user 'root'
   cwd DIR_NAME
 	only_if "test -d #{DIR_NAME}/build"
+end
+
+# Remove the archive.
+file "#{DRIVER_FILE}" do
+  action :delete
+  backup false
+  only_if "test -f #{DRIVER_FILE}"
 end
 
 # Remove the extracted directory.

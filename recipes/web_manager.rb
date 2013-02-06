@@ -9,42 +9,41 @@
 
 include_recipe "cubrid"
 
-USER_HOME_DIR = "#{node['cubrid']['user_home_dir']}"
-CWM_EXTRACT_DIR_NAME = "#{USER_HOME_DIR}/#{node['cubrid']['cwm_dirname']}"
-CWM_BINARY = "#{USER_HOME_DIR}/#{node['cubrid']['cwm_filename']}"
+TEMP_DIR = "/tmp"
+CWM_EXTRACT_DIR_NAME = "#{TEMP_DIR}/#{node['cubrid']['cwm_dirname']}"
+CWM_BINARY = "#{TEMP_DIR}/#{node['cubrid']['cwm_filename']}"
 CUBRID_HOME_DIR = "#{node['cubrid']['home']}"
 CWM_HOME_DIR = "#{CUBRID_HOME_DIR}/share/webmanager"
+CM_HTTPD_CONF = "#{node['cubrid']['cm_httpd_conf']}"
 
 if node['cubrid']['version'] != "8.4.3"
   remote_file CWM_BINARY do
-    user "vagrant"
+    action :create_if_missing
     source "#{node['cubrid']['cwm_tar_url']}"
     mode 0644
     not_if "test -d #{CWM_HOME_DIR}"
   end
 
   execute "tar -zxf #{CWM_BINARY}" do
-    user "vagrant"
-    cwd "#{USER_HOME_DIR}"
+    cwd "#{TEMP_DIR}"
     only_if "test -f #{CWM_BINARY}"
   end
 
   # stop cubrid manager
   execute "cubrid manager stop" do
-    user "vagrant"
     only_if "test -f #{CWM_BINARY}"
   end
 
   execute "Override CUBRID binaries" do
-    user "vagrant"
     command "cp -r #{CWM_EXTRACT_DIR_NAME}/* #{CUBRID_HOME_DIR}"
     only_if "test -d #{CWM_EXTRACT_DIR_NAME}"
   end
 
-  # start cubrid manager
-  execute "cubrid manager start" do
-    user "vagrant"
-    only_if "test -f #{CWM_BINARY}"
+  # Own CUBRID files.
+  execute "Change ownership of #{CUBRID_HOME_DIR}" do
+    command "chown -R root #{CUBRID_HOME_DIR} && chgrp -R root #{CUBRID_HOME_DIR}"
+    only_if "test -d #{CUBRID_HOME_DIR}"
+    not_if "ls -ld #{CWM_HOME_DIR} | grep root"
   end
 
   directory "#{CWM_EXTRACT_DIR_NAME}" do
@@ -58,9 +57,19 @@ if node['cubrid']['version'] != "8.4.3"
     only_if "test -f #{CWM_BINARY}"
     backup false
   end
-else
-  log "CUBRID 8.4.3 already comes with built-in CUBRID Web Manager. So skipping this installation."
 end
+
+# Stop CUBRID Manager Service.
+execute "cubrid manager stop"
+
+# Update cm_httpd.conf.
+template CM_HTTPD_CONF do
+  source "cm_httpd.conf.erb"
+  not_if "cat #{CM_HTTPD_CONF} | grep 'Cookbook Name:: cubrid'"
+end
+
+# Start CUBRID Manager Service.
+execute "cubrid manager start"
 
 # On CentOS/RedHat/Fedora iptables REJECTs all external connection to most ports including those used to conenct to CUBRID.
 # We need to open CUBRID Web Manager port only.
