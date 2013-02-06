@@ -1,0 +1,179 @@
+#
+# Cookbook Name:: cubrid
+# Templates:: cm_httpd.conf
+#
+# Copyright (C) 2002-2012 Igor Sysoev
+# Copyright (C) 2011,2012 Nginx, Inc.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL AUTHOR OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
+#
+
+# cm_httpd.conf 
+#     -- cubrid web manager server configuration file
+
+#
+# User permissions setting
+#
+user  root;
+
+#
+# Worker process setting
+#
+worker_processes  1;
+
+#
+# Worker connections number 
+#
+events {
+    worker_connections  1024;
+}
+
+###############################
+# HTTP server parameter
+###############################
+http {
+    default_type  application/unknown;
+    include       mime.types;
+    
+    #
+    # Specifies the maximum accepted body size of a client request.
+    #
+    client_max_body_size 1024m;
+    
+    #
+    # Directive activate or deactivate the usage of sendfile(). 
+    #   
+    sendfile        on;
+
+    #
+    # The parameter assigns the timeout for keep-alive connections with the client.
+    #
+    keepalive_timeout  65;
+    server_tokens      off;
+
+    #########################
+    # Upstream proxy setting#
+    #########################
+    upstream  cwm.cubrid.org  {
+        #
+        # Forward request to cub_cmserver
+        # default port : 8003
+        #
+        #############################################################
+        # WARNING INFORMATION
+        # Don't modify this port, cub_cmserver will set it.
+        #############################################################
+        # -*@*-
+        server   localhost:8003;
+    }
+
+    ######################
+    # Server host setting#
+    ######################    
+    server {
+        #
+        # Host port
+        #
+        listen       8282;
+        
+        #
+        # Host name
+        #        
+        server_name  localhost;
+        
+        #
+        # SSL setting
+        #       
+        ssl                  on;
+        ssl_certificate      cm_httpd.crt;
+        ssl_certificate_key  cm_httpd.key;
+        ssl_session_timeout  60m;
+        ssl_protocols  SSLv2 SSLv3 TLSv1;
+        ssl_ciphers  HIGH:!aNULL:!MD5;
+        ssl_prefer_server_ciphers   on;
+        
+        ##########################
+        # Server location setting#
+        ##########################
+        location / {
+            root   share/webmanager;
+            index  index.html index.htm;
+            add_header Cache-Control no-cache;
+        }
+        
+        #
+        # Forward /cm_api request to cub_cmserver
+        #
+        location /cm_api {
+            proxy_pass         http://cwm.cubrid.org;
+            proxy_set_header   Host             $host;
+            proxy_set_header   X-Real-IP        $remote_addr;
+            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+        }
+
+        #
+        # Forward /cm_cci request to cub_cmserver
+        #
+        location /cci {
+            proxy_pass         http://cwm.cubrid.org;
+            proxy_set_header   Host             $host;
+            proxy_set_header   X-Real-IP        $remote_addr;
+            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+        }
+
+        # Upload form should be submitted to this location
+        location /upload {
+              # Pass altered request body to this location
+              upload_pass   @upload_pass;
+            
+              # Store files to this directory
+              upload_store tmp;
+              
+              # Allow uploaded files to be read only by user
+              upload_store_access user:r;
+              
+              # Specifies a regex pattern for names of fields 
+              # which will be passed to backend from original 
+              # request body.
+              upload_pass_form_field "^submit$|^description$";
+              
+              # Used for cleanup after backend or server failure.
+              upload_cleanup 400 404 499 500-505;
+        }
+    
+        # Pass altered request body to a backend
+        # same as upstream config
+        # the port must same with upstream port
+        location @upload_pass {
+            #
+            # Forward request to cub_cmserver
+            # default port : 8003
+            #
+            #############################################################
+            # WARNING INFORMATION
+            # Don't modify this port, cub_cmserver will set it.
+            #############################################################
+            # -*@*-
+            proxy_pass   http://localhost:8003;
+        }
+    }
+}
