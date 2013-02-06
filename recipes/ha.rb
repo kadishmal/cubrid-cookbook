@@ -53,26 +53,20 @@ if !node['cubrid']['ha_hosts'].empty?
 	# update cubrid_ha.conf
 	template HA_CONF do
 	  source "cubrid_ha.conf.erb"
-	  user "vagrant"
 	  not_if "cat #{HA_CONF} | grep 'Cookbook Name:: cubrid'"
 	end
 
 	# update cubrid.conf
 	template CUBRID_CONF do
 	  source "cubrid.conf.erb"
-	  user "vagrant"
 	  not_if "cat #{CUBRID_CONF} | grep 'Cookbook Name:: cubrid'"
 	end
 
 	# restart cubrid service
-	execute "cubrid service restart" do
-	  user "vagrant"
-	end
+	execute "cubrid service restart"
 
 	# start cubrid heartbeat
-	execute "cubrid heartbeat start" do
-	  user "vagrant"
-	end
+	execute "cubrid heartbeat start"
 else
 	raise Chef::Exceptions::AttributeNotFound, "Cannot configure CUBRID HA without ha_hosts. Refer to \"ha_hosts\" attribute in /cubrid/attributes/ha.rb for the syntax."
 end
