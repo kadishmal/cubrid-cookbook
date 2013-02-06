@@ -6,7 +6,6 @@
 #
 # Distributed under MIT license
 #
-#include_recipe "apt"
 
 # add CUBRID Launchpad PPA
 #apt_repository "cubrid" do
@@ -18,9 +17,9 @@
 #  key "E871ADEE"
 #end
 
-USER_HOME_DIR = "#{node['cubrid']['user_home_dir']}"
 FILENAME = "#{node['cubrid']['filename']}"
-CUBRID_BINARY = "#{USER_HOME_DIR}/#{FILENAME}"
+TEMP_DIR = "/tmp"
+CUBRID_BINARY = "#{TEMP_DIR}/#{FILENAME}"
 CUBRID_HOME_DIR = "#{node['cubrid']['home']}"
 CUBRID_DATABASES_DIR = "#{CUBRID_HOME_DIR}/databases"
 ENV_SCRIPT = "#{node['cubrid']['env_script']}"
@@ -31,43 +30,49 @@ ENV['CUBRID_LANG'] = "en_US"
 ENV['LD_LIBRARY_PATH'] = "#{CUBRID_HOME_DIR}/lib:#{ENV['LD_LIBRARY_PATH']}"
 ENV['PATH'] = "#{CUBRID_HOME_DIR}/bin:#{ENV['PATH']}"
 
+# Download the archive.
 remote_file CUBRID_BINARY do
+  action :create_if_missing
   source "#{node['cubrid']['tar_url']}"
   mode 0644
   not_if "test -d #{CUBRID_HOME_DIR}"
 end
 
-execute "extract #{CUBRID_BINARY} to #{CUBRID_HOME_DIR}" do
-  user "vagrant"
-  cwd "#{USER_HOME_DIR}"
-  command "tar -zxf #{FILENAME}"
-  not_if "test -d #{CUBRID_HOME_DIR}"
+# Extract the downloaded archive.
+execute "tar -zxf #{FILENAME}" do
+  cwd "#{TEMP_DIR}"
+  only_if "test -f #{CUBRID_BINARY}"
 end
 
+# Move the extracted directory to the target CUBRID home directory.
+execute "mv CUBRID #{CUBRID_HOME_DIR}" do
+  cwd "#{TEMP_DIR}"
+  not_if "test -d #{CUBRID_HOME_DIR}"
+  only_if "test -d #{TEMP_DIR}/CUBRID"
+end
+
+# Own CUBRID files.
+execute "Change ownership of #{CUBRID_HOME_DIR}" do
+  command "chown -R root #{CUBRID_HOME_DIR} && chgrp -R root #{CUBRID_HOME_DIR}"
+  only_if "test -d #{CUBRID_HOME_DIR}"
+  not_if "ls -ld #{CUBRID_HOME_DIR} | grep root"
+end
+
+# Remove the downloaded archive.
 file "#{CUBRID_BINARY}" do
   action :delete
-  not_if "test -d #{CUBRID_HOME_DIR}"
   backup false
-end
-
-execute "move CUBRID to #{CUBRID_HOME_DIR}" do
-  user "root"
-  cwd "#{USER_HOME_DIR}"
-  command "mv CUBRID #{CUBRID_HOME_DIR}"
-  not_if "test -d #{CUBRID_HOME_DIR}"
+  only_if "test -f #{CUBRID_BINARY}"
 end
 
 # Set environment variables script which will run every time a user logs in
 execute "Set environment variables script" do
-  user "root"
   command "cp #{node['cubrid']['env_script_original']} #{ENV_SCRIPT}"
-  not_if "test -d #{ENV_SCRIPT}"
+  not_if "test -f #{ENV_SCRIPT}"
 end
 
-# start cubrid service
-execute "cubrid service start" do
-  user "vagrant"
-end
+# Start CUBRID Service.
+execute "cubrid service start"
 
 # On CentOS/RedHat/Fedora iptables REJECTs all external connection to most ports including those used to conenct to CUBRID.
 # We need to open CUBRID-only ports.
