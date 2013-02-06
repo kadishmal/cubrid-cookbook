@@ -29,7 +29,7 @@ if node['cubrid']['shard_db'] != "" && !node['cubrid']['shard_hosts'].empty?
 	node['cubrid']['shard_hosts'].each do |host_list|
 		host_list.each do |host, ip|
 			execute "sed -i '$a #{ip}\t#{host}' /etc/hosts" do
-				not_if "cat /etc/hosts | egrep '\b#{host}\b'", :user => "vagrant"
+				not_if "egrep '\s#{host}\b' /etc/hosts"
 			end
 
 			last_host_to_be_shard_broker = host
@@ -49,27 +49,25 @@ if node['cubrid']['shard_db'] != "" && !node['cubrid']['shard_hosts'].empty?
 	# Update shard.conf.
 	template SHARD_CONF do
 	  source "shard.conf.erb"
-	  user "vagrant"
 	  not_if "cat #{SHARD_CONF} | grep 'Cookbook Name:: cubrid'"
 	end
 
 	# Update shard_connection.txt.
 	template SHARD_CONNECTION_TXT do
 	  source "shard_connection.txt.erb"
-	  user "vagrant"
 	  not_if "cat #{SHARD_CONNECTION_TXT} | grep 'Cookbook Name:: cubrid'"
 	end
 
 	# Update shard_keys.txt.
 	template SHARD_KEY_TXT do
 	  source "shard_key.txt.erb"
-	  user "vagrant"
 	  not_if "cat #{SHARD_KEY_TXT} | grep 'Cookbook Name:: cubrid'"
 	end
 
+	execute "echo #{last_host_to_be_shard_broker}"
+
 	# Start CUBRID SHARD service
 	execute "cubrid shard start" do
-	  user "vagrant"
 	  only_if "hostname | grep '#{last_host_to_be_shard_broker}'"
 	end
 else
