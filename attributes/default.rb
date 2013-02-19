@@ -28,6 +28,11 @@ default['cubrid']['user_home_dir'] = "/home/vagrant"
 # the target directory to install CUBRID
 default['cubrid']['home'] = "/opt/cubrid"
 
+# The configurations directory.
+set['cubrid']['conf_dir'] = "#{node['cubrid']['home']}/conf"
+# Full path to cubrid.conf.
+set['cubrid']['conf'] = "#{node['cubrid']['conf_dir']}/cubrid.conf"
+
 # the file name of the shell scipt which sets environmental variables for CUBRID
 set['cubrid']['env_script_name'] = "cubrid.sh"
 # the full path of the original shell script distributed with CUBRID source

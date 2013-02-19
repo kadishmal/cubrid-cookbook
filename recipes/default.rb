@@ -22,6 +22,7 @@ TEMP_DIR = "/tmp"
 CUBRID_BINARY = "#{TEMP_DIR}/#{FILENAME}"
 CUBRID_HOME_DIR = "#{node['cubrid']['home']}"
 CUBRID_DATABASES_DIR = "#{CUBRID_HOME_DIR}/databases"
+CUBRID_CONF = "#{node['cubrid']['conf']}"
 ENV_SCRIPT = "#{node['cubrid']['env_script']}"
 
 ENV['CUBRID'] = "#{CUBRID_HOME_DIR}"
@@ -69,6 +70,12 @@ end
 execute "Set environment variables script" do
   command "cp #{node['cubrid']['env_script_original']} #{ENV_SCRIPT}"
   not_if "test -f #{ENV_SCRIPT}"
+end
+
+# update cubrid.conf
+template CUBRID_CONF do
+  source "default.cubrid.conf.erb"
+  not_if "cat #{CUBRID_CONF} | grep 'Cookbook Name:: cubrid'"
 end
 
 # Start CUBRID Service.
