@@ -60,5 +60,6 @@ action :create do
   if new_resource.autostart
     # Start this database.
     execute "cubrid server start #{DB}"
+    # TODO: also update the cubrid.conf and set this database to be autostarted in the "server" parameter.
   end
 end

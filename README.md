@@ -1,6 +1,6 @@
 ## Description
 
-Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), CUBRID PDO, PHP, Perl, and Python drivers (*see [Recipies](#recipes) below*), [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager), create the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) or any number of other user defined databases, automatically configure CUBRID HA and [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) in multi VM environment.
+Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), CUBRID PDO, PHP, Perl, and Python drivers (*see [Recipies](#recipes) below*), [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager), create the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) or any number of other user defined databases, automatically configure CUBRID HA and [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) in multi VM environment, and confirgure additional brokers.
 
 This **cubrid** cookbook is tested on [Vagrant](http://www.vagrantup.com/) boxes as well as plain vanilla Linux (*see [Platform](#platform) below*).
 
@@ -43,6 +43,7 @@ This **cubrid** cookbook has the following dependencies:
 This cookbook provides the following recipes:
 
 - **cubrid**: installs the specified version of CUBRID Database. Available versions: 8.4.1, 8.4.3, 9.0.0  (*default*).
+- **broker**: configures additional [Brokers](http://www.cubrid.org/blog/cubrid-life/the-cubrid-broker-story/).
 - **demodb**: creates CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database.
 - **ha**: configures CUBRID HA in multi VM environment.
 - **new_dbs**: installs one or more databases defined by a user.
@@ -55,232 +56,40 @@ This cookbook provides the following recipes:
 
 ## Attributes
 
-### attributes/default.rb
+Check the source code of the available attributes.
 
-```
-# the default version of CUBRID to install
-default['cubrid']['version']
-# the full version of CUBRID including the build number
-set['cubrid']['full_version']
-# the architecture of CUBRID binaries to install based on the current system architecture
-set['cubrid']['arch']
-
-# the file name of the archive to download
-set['cubrid']['filename']
-
-# the full URL of the TAR archive to download
-set['cubrid']['tar_url']
-
-# the home directory of a Vagrant user
-default['cubrid']['user_home_dir']
-# the target directory to install CUBRID
-default['cubrid']['home']
-
-# the file name of the shell scipt which sets environmental variables for CUBRID
-set['cubrid']['env_script_name']
-# the full path of the original shell script distributed with CUBRID source
-set['cubrid']['env_script_original']
-# the target path where the shell script should be placed so that when a user logs in the variables are available.
-set['cubrid']['env_script']
-```
-
-### attributes/database.rb
-
-```
-# the default target directory to install CUBRID
-default['cubrid']['home']
-
-# the directory to store CUBRID databases
-set['cubrid']['databases_dir']
-
-# "data_buffer_size" parameter value used in conf/cubrid.conf
-default['cubrid']['data_buffer_size']
-# "db_volume_size" parameter value used in conf/cubrid.conf
-default['cubrid']['db_volume_size']
-# "log_volume_size" parameter value used in conf/cubrid.conf
-default['cubrid']['log_volume_size']
-```
-
-### attributes/demodb.rb
-
-```
-# the default target directory to install CUBRID
-default['cubrid']['home']
-
-# the directory where to install the demodb database
-set['cubrid']['demodb_dir']
-# the full path of a script which install the demodb database
-set['cubrid']['demodb_script']
-```
-
-### attributes/ha.rb
-
-```
-# a default list of databases to create and configure for CUBRID HA
-default['cubrid']['ha_dbs']
-# the name of the HA group
-default['cubrid']['ha_group']
-# a default list of hosts to join ha_group
-# in the form of { "node1" => "IP 1", "node2" => "IP 2" ... }
-default['cubrid']['ha_hosts']
-
-# ha_db_list in the form of db1,db2...
-set['cubrid']['ha_db_list']
-# ha_hosts_list in the form of node1:node2...
-set['cubrid']['ha_hosts_list']
-# ha_node_list in the form of ha_group@ha_hosts_list
-set['cubrid']['ha_node_list']
-
-# the configurations directory
-set['cubrid']['conf_dir']
-# full path to cubrid.conf
-set['cubrid']['conf']
-# full path to cubrid_ha.conf
-set['cubrid']['ha_conf']
-```
-
-### attributes/new_dbs.rb
-
-```
-# a default list of databases to create
-default['cubrid']['new_dbs']
-```
-
-### attributes/pdo_cubrid.rb
-
-```
-# the default version of CUBRID to install
-default['cubrid']['version']
-
-# the version of a CUBRID PDO driver to install from PECL
-set['cubrid']['pdo_version']
-# the name of a PECL package to install CUBRID PDO driver
-set['cubrid']['pdo_package']
-
-# the location of PHP configuration directory
-set['cubrid']['php_ext_conf_dir']
-
-# the full path of pdo_cubrid.ini
-set['cubrid']['pdo_ext_conf']
-# the directives which should be placed in pdo_cubrid.ini files; these are populate to pdo_cubrid.ini.erb template of this cookbook.
-set['cubrid']['pdo_directives']
-```
-
-### attributes/perl_driver.rb
-
-```
-# The version of a CUBRID Perl driver to install from CPAN.
-set['cubrid']['perl_version']
-# The file name of the the package to install.
-set['cubrid']['perl_filename']
-```
-
-### attributes/php_driver.rb
-
-```
-# the default version of CUBRID to install
-default['cubrid']['version']
-
-# the version of a CUBRID PHP driver to install from PECL
-set['cubrid']['php_version']
-# the name of a PECL package to install CUBRID PHP driver
-set['cubrid']['php_package']
-
-# the location of PHP configuration directory
-set['cubrid']['php_ext_conf_dir']
-
-# the full path of cubrid.ini
-set['cubrid']['php_ext_conf']
-# the directives which should be placed in cubrid.ini files; these are populate to cubrid.ini.erb template of this cookbook.
-set['cubrid']['php_directives']
-```
-
-### attributes/python_driver.rb
-
-```
-# the default version of CUBRID to install
-default['cubrid']['version']
-
-# The defalut Python Development Package required to build Python modules.
-set['cubrid']['python_dev_package'] 
-
-# The version of a CUBRID Python driver to install from PIP.
-set['cubrid']['python_version']
-# The name of a PIP package to install CUBRID Python driver.
-set['cubrid']['python_package']
-
-# the name of the directory where the archive is extracted
-set['cubrid']['python_dirname']
-# The file name of the archive to download.
-set['cubrid']['python_filename']
-
-# The full URL of the TAR archive to download.
-set['cubrid']['python_tar_url']
-
-# The home directory of a Vagrant user.
-default['cubrid']['user_home_dir']
-# The target directory to install CUBRID.
-default['cubrid']['home']
-```
-
-### attributes/shard.rb
-
-```
-default['cubrid']['shard_db']
-# The default database user for the SHARD database.
-default['cubrid']['shard_user']
-# The default password for a SHARD database user.
-default['cubrid']['shard_user_password']
-# A default list of hosts for CUBRID SHARD in the form of array of hash objects
-# where each hash object represents a single shard
-# which contains a list of host=>ip key/values for HA (if necessary):
-# [
-#   { "shard1node1" => "IP 1", "shard1node2" => "IP 2", "shard1node3" => "IP 3" }
-#   { "shard2node1" => "IP 4", "shard2node2" => "IP 5", "shard2node3" => "IP 6" }
-#   { "shard3node1" => "IP 7", "shard3node2" => "IP 8", "shard3node3" => "IP 9" }
-# ]
-# The above will distributed data between 3 SHARD nodes: shard1node1, shard2node1, shard3node1.
-# Each of those nodes can be configured in HA for auto failover among 3 other HA nodes.
-# In the above case shard1node1 is a master, while shard1node2 and shard1node3 are slave nodes.
-default['cubrid']['shard_hosts']
-
-# the configurations directory
-set['cubrid']['conf_dir']
-# full path to cubrid.conf
-set['cubrid']['conf']
-# full path to shard.conf
-set['cubrid']['shard_conf']
-# full path to shard_connection.txt
-set['cubrid']['shard_connection_txt']
-# full path to shard_key.txt
-set['cubrid']['shard_key_txt']
-```
-
-### attributes/web_manager.rb
-
-```
-# the default version of CUBRID to install
-default['cubrid']['version']
-# the full version of CUBRID including the build number
-set['cubrid']['cwm_full_version']
-# the architecture of CUBRID binaries to install based on the current system architecture
-set['cubrid']['arch']
-
-# the name of the directory where the archive is extracted
-set['cubrid']['cwm_dirname']
-# the file name of the archive to download
-set['cubrid']['cwm_filename']
-
-# the full URL of the TAR archive to download
-set['cubrid']['cwm_tar_url']
-
-# the home directory of a Vagrant user
-default['cubrid']['user_home_dir']
-# the target directory to install CUBRID
-default['cubrid']['home']
-```
+- [broker](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/broker.rb)
+- [database](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/database.rb)
+- [default](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/default.rb)
+- [demodb](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/demodb.rb)
+- [ha](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/ha.rb)
+- [new_dbs](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/new_dbs.rb)
+- [pdo_cubrid](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/pdo_cubrid.rb)
+- [perl_driver](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/perl_driver.rb)
+- [php_driver](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/php_driver.rb)
+- [python_driver](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/python_driver.rb)
+- [shard](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/shard.rb)
+- [web_manager](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/web_manager.rb)
 
 ## Usage
+
+### CUBRID Broker
+
+If you want to configure additional Brokers, use **broker** recipe.
+
+```
+chef.json = {
+    "cubrid" => {
+        "broker_count" => 10
+    }
+}
+chef.add_recipe "cubrid::broker"
+```
+
+This will:
+
+1. Add specified number of CUBRID Brokers and update the configuration file (*cubrid_broker.conf*).
+2. Restart the CUBRID Broker Service.
 
 ### CUBRID Database
 
@@ -309,8 +118,9 @@ This will:
 3. Extract it to */opt/cubrid*.
 4. Remove the downloaded archive.
 5. Setup the startup script for a user to auto set environmental variables when the user logs in to the system.
-6. Start CUBRID Service.
-7. When installed on CentOS, this **default** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **default** recipe will add `ACCEPT` rules for CUBRID ports (*but not all; HA port will be opened by **ha** recipe, Web Manager port by **web_manager** recipe, SHARD port by **shard** recipe*) such as **30000:30100**, **33000:33100**, **8001:8003**, **1523**. Detailed explanation of all ports used by CUBRID can be found at [http://www.cubrid.org/port_iptables_configuration](http://www.cubrid.org/port_iptables_configuration).
+6. Override CUBRID configuration file (*cubrid.conf*) with user defined or default values.
+7. Start CUBRID Service.
+8. When installed on CentOS, this **default** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **default** recipe will add `ACCEPT` rules for CUBRID ports (*but not all; HA port will be opened by **ha** recipe, Web Manager port by **web_manager** recipe, SHARD port by **shard** recipe*) such as **30000:30100**, **33000:33100**, **8001:8003**, **1523**. Detailed explanation of all ports used by CUBRID can be found at [http://www.cubrid.org/port_iptables_configuration](http://www.cubrid.org/port_iptables_configuration).
 
 ### CUBRID demodb database
 
@@ -344,7 +154,7 @@ This will:
                 "ha_hosts" => {"node1" => "10.11.12.13", "node2" => "10.11.12.14"}
             }
         }
-        
+
 	If `ha_hosts` is not provided, an error will be raise saying: **Cannot configure CUBRID HA without ha_hosts. Refer to "ha_hosts" attribute in /cubrid/attributes/ha.rb for the syntax.**
 2. Create all databases listed in `ha_dbs` array which need to be replicated between master:slave nodes in HA environment, if they are not already created. If user doesn't override this attribute, `ha_dbs=["testdb"]`.
 3. Update */opt/cubrid/databases/databases.txt* file to set `ha_hosts` for each database, if it is not already updated.
@@ -364,7 +174,7 @@ If you also want to create multiple databases, use **new_dbs** recipe. This reci
             "new_dbs" => ["apple_db", "banana_db"],
         }
     }
-    
+
     chef.add_recipe "cubrid::new_dbs"
 
 
@@ -425,7 +235,7 @@ If you also want to install CUBRID Python driver, there are three recipes to cho
 
 - **python_driver**: on CentOS 5.x installs the CUBRID Python driver using the *python_driver_source* recipe, otherwise using the *python_driver_pip* recipe.
 - **python_driver_pip**: installs pip, virtualenv, and the CUBRID Python driver. pip [requires](http://pypi.python.org/pypi/pip) at least Python 2.5 installed, therefore recommended on CentOS 6+/Ubuntu 10+.
-- **python_driver_source**: installs the Python driver from source code. Works on Python 2.4+, therefore recommended on CentOS 5.x. 
+- **python_driver_source**: installs the Python driver from source code. Works on Python 2.4+, therefore recommended on CentOS 5.x.
 
 #### python_driver
 
@@ -497,7 +307,7 @@ This will:
                 ]
             }
         }
-        
+
 	If `ha_hosts` is not provided, an error will be raise saying: **Cannot configure CUBRID SHARD without shard_db and shard_hosts. Refer to "shard_db" and "shard_hosts" attributes in /cubrid/attributes/shard.rb for the syntax.**
 2. Create and auto start a `shard_db` database, if it is not already created, which will be shard among `shard_hosts`.
 3. Update */etc/hosts* with new **IP - host** values defined in `shard_hosts`, if it is not already updated.
@@ -530,7 +340,7 @@ The default username and password to connect to CUBRID Manager Server are **admi
 
 ## TODO
 
-- Test on other Linux distributions including Fedora.
+- Test on Fedora.
 - Allow users to specify custom port for CUBRID HA.
 - Test on a vanilla CentOS.
 - Validate the database name.

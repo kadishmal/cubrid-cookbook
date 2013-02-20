@@ -11,7 +11,7 @@ maintainer_email "kadishmal@gmail.com"
 license          "MIT"
 description      "Installs/Configures CUBRID Database"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "2.0.0"
+version          "2.1.0"
 
 depends          "build-essential"
 depends          "php"
@@ -24,6 +24,7 @@ depends          "yum"
 end
 
 recipe "cubrid", "Installs CUBRID Database"
+recipe "cubrid::broker", "Configures additional CUBRID Brokers"
 recipe "cubrid::demodb", "Installs CUBRID demodb database"
 recipe "cubrid::ha", "Configures CUBRID HA in multi VM environment"
 recipe "cubrid::new_dbs", "Creates multiple databases"

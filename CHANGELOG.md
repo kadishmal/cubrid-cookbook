@@ -2,19 +2,26 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 2.1.0
+
+- New: added a new "broker" recipe which add a specified number of brokers to the server.
+- Enh: added a validation to "shard" recipe to check if CUBRID version is >= 8.4.3. For lower version it will raise an error saying CUBRID SHARD is not supported.
+- Enh: allow the default recipe to override cubrid.conf server configurations.
+- Doc: updated README.
+
 ## 2.0.0
 
-- Enh: Improved the "default" recipe to work on vanilla Linux as well as Vagrant.
-- Enh: Improved the "demodb" recipe to work on vanilla Linux as well as Vagrant.
-- Enh: Improved the "ha" recipe to work on vanilla Linux as well as Vagrant.
-- Enh: Improved the "python_driver_source" recipe to work on vanilla Linux as well as Vagrant.
-- Enh: Improved the "shard" recipe to work on vanilla Linux as well as Vagrant.
-- Enh: Improved the "web_manager" recipe to work on vanilla Linux as well as Vagrant.
+- Enh: improved the "default" recipe to work on vanilla Linux as well as Vagrant.
+- Enh: improved the "demodb" recipe to work on vanilla Linux as well as Vagrant.
+- Enh: improved the "ha" recipe to work on vanilla Linux as well as Vagrant.
+- Enh: improved the "python_driver_source" recipe to work on vanilla Linux as well as Vagrant.
+- Enh: improved the "shard" recipe to work on vanilla Linux as well as Vagrant.
+- Enh: improved the "web_manager" recipe to work on vanilla Linux as well as Vagrant.
 
 ## 1.9.0
 
-- New: Added CentOS 5.6 and 6.0 support.
-- Enh: CUBRID Manager Server in 8.4.3 also needs 8003 port open.
+- New: added CentOS 5.6 and 6.0 support.
+- Enh: CUBRID Manager Server in 8.4.3 also needs 8003 port open which is used by CUBRID Web Manager.
 - Doc: updated README.
 
 ## 1.8.0
