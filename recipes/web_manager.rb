@@ -9,6 +9,8 @@
 
 include_recipe "cubrid"
 
+require 'chef/shell_out'
+
 TEMP_DIR = "/tmp"
 CWM_EXTRACT_DIR_NAME = "#{TEMP_DIR}/#{node['cubrid']['cwm_dirname']}"
 CWM_BINARY = "#{TEMP_DIR}/#{node['cubrid']['cwm_filename']}"
@@ -16,21 +18,38 @@ CUBRID_HOME_DIR = "#{node['cubrid']['home']}"
 CWM_HOME_DIR = "#{CUBRID_HOME_DIR}/share/webmanager"
 CM_HTTPD_CONF = "#{node['cubrid']['cm_httpd_conf']}"
 
-if node['cubrid']['version'] != "8.4.3"
+def getCurrentInstalledVersion
+  @getCurrentInstalledVersion ||= begin
+    delimeter = /=/
+
+    version_check_cmd = "cat #{CWM_HOME_DIR}/appLoader.js | grep 'Ext.cwm.prodVersion ='"
+    cmd = Mixlib::ShellOut.new(version_check_cmd)
+    version = cmd.run_command
+
+    version.stdout.split(delimeter)[1].strip.gsub(/[';]/, "")
+  rescue Chef::Exceptions::ShellCommandFailed
+  rescue Mixlib::ShellOut::ShellCommandFailed
+  end
+end
+
+# Stop CUBRID Manager Service.
+execute "cubrid manager stop"
+
+current_installed_version = getCurrentInstalledVersion
+
+# Check if the installed version of CUBRID Web Manager is smaller
+# than the one defined in the recipe attributes.
+# Also make sure the compatible version is installed, so that
+# 9.0.0 version doesn't override 8.4.1 version.
+if current_installed_version < node['cubrid']['cwm_full_version'] && current_installed_version.index(node['cubrid']['version']) == 0
   remote_file CWM_BINARY do
     action :create_if_missing
     source "#{node['cubrid']['cwm_tar_url']}"
     mode 0644
-    not_if "test -d #{CWM_HOME_DIR}"
   end
 
   execute "tar -zxf #{CWM_BINARY}" do
     cwd "#{TEMP_DIR}"
-    only_if "test -f #{CWM_BINARY}"
-  end
-
-  # stop cubrid manager
-  execute "cubrid manager stop" do
     only_if "test -f #{CWM_BINARY}"
   end
 
@@ -58,9 +77,6 @@ if node['cubrid']['version'] != "8.4.3"
     backup false
   end
 end
-
-# Stop CUBRID Manager Service.
-execute "cubrid manager stop"
 
 # Update cm_httpd.conf.
 template CM_HTTPD_CONF do
