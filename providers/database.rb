@@ -41,7 +41,10 @@ action :create do
       # already created, eg. by "demodb" recipe.
       execute "cubrid server stop #{DB}"
       # Change the password.
-      execute "csql -S -u dba #{DB} -c \"ALTER USER dba PASSWORD '#{new_resource.password}'\""
+      execute "Change a user password for \"dba\" user in #{DB} database." do
+        command "csql -S -u dba #{DB} -c \"ALTER USER dba PASSWORD '#{new_resource.password}'\""
+        only_if "csql -S -u dba #{DB} -c \"SELECT 1 FROM db_root\""
+      end
     end
   else
     # "dba" is a default user for any database. But user can add more users.
@@ -51,7 +54,8 @@ action :create do
       # already created, eg. by "demodb" recipe.
       execute "cubrid server stop #{DB}"
       # Create a new user.
-      execute "csql -S -u dba #{DB} -c \"CREATE USER #{new_resource.dbuser} PASSWORD '#{new_resource.password}'\"" do
+      execute "Change a user password for \"#{new_resource.dbuser}\" user in #{DB} database." do
+        command "csql -S -u dba #{DB} -c \"CREATE USER #{new_resource.dbuser} PASSWORD '#{new_resource.password}'\""
         only_if "csql -S -u dba #{DB} -c \"SELECT * FROM db_user WHERE STRCMP(\"name\", '#{new_resource.dbuser}') = 0;\" | grep 'no results'"
       end
     end
