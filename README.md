@@ -89,7 +89,7 @@ chef.add_recipe "cubrid::broker"
 This will:
 
 1. Add specified number of CUBRID Brokers and update the configuration file (*cubrid_broker.conf*).
-2. Restart the CUBRID Broker Service.
+2. Restart the CUBRID Broker Service if the configuration file has been updated.
 
 ### CUBRID Database
 
@@ -181,7 +181,8 @@ If you also want to create multiple databases, use **new_dbs** recipe. This reci
 This will:
 
 1. Create all databases defined in `new_dbs` attribute.
-2. Auto start all databases.
+2. Optionally add a new database user with a defined username and a password. If a password is defined without a username, the password will be set for the default **dba** user, in case **dba**'s password is still empty. If the password is non-empty, i.e. has already altered previously, the password will not be reset.
+2. Auto start all databases if they are set to auto start, which is the default behavior.
 
 ### CUBRID PDO driver
 
@@ -327,12 +328,14 @@ chef.add_recipe "cubrid::web_manager"
 
 This will:
 
-1. Download CUBRID Web Manager package (`tar.gz`) from [CUBRID SF.net repository](http://sourceforge.net/projects/cubrid/files/) if it is not already installed at */opt/cubrid/share/webmanager*. CWM version will be the same as the main CUBRID Database. If CUBRID 8.4.3 is installed, which comes with built-in CUBRID Web Manager, this recipe will not install CWM.
-2. Stop [CUBRID Manager Server](http://www.cubrid.org/manual/90/en/CUBRID%20Manager%20Server) service.
-3. Extract CWM to */opt/cubrid/*. This will override or add some binaries to */bin*, */conf*, and */share* directories.
-4. Start CUBRID Manager Server service.
+1. Stop [CUBRID Manager Server](http://www.cubrid.org/manual/90/en/CUBRID%20Manager%20Server) service.
+2. Check the version of the installed CUBRID Web Manager.
+3. If CWM is not installed or its version is older than a new available version, download the new package (`tar.gz`) from [CUBRID SF.net repository](http://sourceforge.net/projects/cubrid/files/). CWM version will be the same as the main CUBRID Database.
+4. Extract the downloaded package to */opt/cubrid/*. This will override or add CWM binaries to */bin*, */conf*, and */share* directories.
 5. Remove the downloaded archive and extracted directory.
-6. When installed on CentOS, this **web_manager** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **web_manager** recipe will add an `ACCEPT` rule for CUBRID Web Manager port which is **8282** by default.
+6. Override the configuration file for CWM, if it is not already overriden.
+7. Start CUBRID Manager Server service.
+8. When installed on CentOS, this **web_manager** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **web_manager** recipe will add an `ACCEPT` rule for CUBRID Web Manager port which is **8282** by default.
 
 After CWM is installed, you can access it at [https://your_vm_ip_address:8282](https://your_vm_ip_address:8282). Notice **HTTPS** and **8282** port are used by default. These and other configurations can be adjusted. See [CUBRID Manager HTTPD Variables](http://www.cubrid.org/wiki_tools/entry/cubrid-manager-httpd-variables).
 
