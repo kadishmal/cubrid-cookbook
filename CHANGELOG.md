@@ -2,9 +2,17 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 2.1.1
+
+- Enh: restart CUBRID Broker Service only if its configuration file is updated.
+- Enh: allow to add a new database user with a given password to a newly created database, or reset the initially empty password with a given one.
+- Enh: to avoid plain passwords being output to a console via Chef logs, wrap execute commands with a human readable text.
+- Enh: allow to update CUBRID Web Manager if older version is installed.
+- Doc: updated README.
+
 ## 2.1.0
 
-- New: added a new "broker" recipe which add a specified number of brokers to the server.
+- New: added a new "broker" recipe which adds a specified number of brokers to the server.
 - Enh: added a validation to "shard" recipe to check if CUBRID version is >= 8.4.3. For lower version it will raise an error saying CUBRID SHARD is not supported.
 - Enh: allow the default recipe to override cubrid.conf server configurations.
 - Doc: updated README.
