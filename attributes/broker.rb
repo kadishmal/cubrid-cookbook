@@ -9,6 +9,7 @@
 
 # Default number of brokers to start.
 default['cubrid']['broker_count'] = 1
+default['cubrid']['min_num_appl_server'] = 5
 default['cubrid']['max_num_appl_server'] = 40
 
 # the target directory to install CUBRID
