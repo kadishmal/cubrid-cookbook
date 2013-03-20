@@ -9,6 +9,7 @@ For those familiar with Vagrant, the following tutorials will help you to quickl
 - [Create a CUBRID Database VM with Vagrant and Chef Cookbook under 5 minutes](http://www.cubrid.org/wiki_tutorials/entry/create-a-cubrid-database-vm-with-vagrant-and-chef-cookbook-under-5-minutes)
 - [Configure CUBRID HA with Vagrant and Chef Cookbook under 4 minutes](http://www.cubrid.org/wiki_tutorials/entry/configure-cubrid-ha-with-vagrant-and-chef-cookbook-under-4-minutes)
 - [Configure CUBRID SHARD with Vagrant and Chef Cookbook under 2 minutes](http://www.cubrid.org/wiki_tutorials/entry/configure-cubrid-shard-with-vagrant-and-chef-cookbook-under-2-minutes)
+- [Install CUBRID remotely with knife-solo and Chef Cookbook](http://www.cubrid.org/wiki_tutorials/entry/install-cubrid-remotely-with-knife-solo-and-chef-cookbook)
 
 ## Platform
 
@@ -32,31 +33,33 @@ This **cubrid** cookbook has the following dependencies:
 
 - Chef 10.14.0+. Make sure you have the latest version of Chef. If necessary, [update](http://wiki.opscode.com/display/chef/Upgrading+Chef+0.10.x+to+the+newest+version+of+Chef) by executing `sudo gem update chef --no-ri --no-rdoc`.
 - Ohai 6.14.0+. Make sure you have the latest version of Ohai. If necessary, [update](http://wiki.opscode.com/display/chef/Ohai+Installation+and+Use) by executing `sudo gem update ohai --no-ri --no-rdoc`.
-- [build-essential](https://github.com/opscode-cookbooks/build-essential) cookbook for PHP, Python, Perl drivers.
-- [yum](https://github.com/opscode-cookbooks/yum) cookbook for **python::package** and **pdo_cubrid** recipes.
-- [php](https://github.com/opscode-cookbooks/php) cookbook for **pdo_cubrid** and **php_driver** recipes.
-- [python](https://github.com/opscode-cookbooks/python) cookbook for **python_driver** recipe.
-- [perl](https://github.com/opscode-cookbooks/perl) cookbook for **perl_driver** recipe.
+- **pdo_cubrid** and **php_driver** depend on: [php](https://github.com/opscode-cookbooks/php) cookbook.
+- **perl_driver** depends on: [build-essential](https://github.com/opscode-cookbooks/build-essential) and [perl](https://github.com/opscode-cookbooks/perl) cookbooks.
+- **python_driver** depends on: [build-essential](https://github.com/opscode-cookbooks/build-essential) and [python](https://github.com/opscode-cookbooks/python) cookbooks.
+- **shard_mysql** depends on: [mysql](https://github.com/opscode-cookbooks/mysql) and [database](https://github.com/opscode-cookbooks/database) cookbooks.
 
 ## Recipes
 
-This cookbook provides the following recipes:
+**cubrid** cookbook provides the following recipes:
 
-- **cubrid**: installs the specified version of CUBRID Database. Available versions: 8.4.1, 8.4.3, 9.0.0  (*default*).
-- **broker**: configures additional [Brokers](http://www.cubrid.org/blog/cubrid-life/the-cubrid-broker-story/).
+- **broker**: configures additional [CUBRID Brokers](http://www.cubrid.org/blog/cubrid-life/the-cubrid-broker-story/).
+- **default**: installs the specified version of CUBRID Database. Available versions: 8.4.1, 8.4.3, 9.0.0  (*default*).
 - **demodb**: creates CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database.
 - **ha**: configures CUBRID HA in multi VM environment.
 - **new_dbs**: installs one or more databases defined by a user.
 - **pdo_cubrid**: installs [CUBRID PDO driver](http://www.cubrid.org/wiki_apis/entry/cubrid-pdo-driver) (*same version as CUBRID Database, except when CUBRID 8.4.1 is installed in which case PDO driver 8.4.0 is installed as they are compatible*).
 - **perl_driver**: installs [CUBRID Perl driver](http://www.cubrid.org/wiki_apis/entry/cubrid-perl-driver) (*same version as CUBRID Database*).
 - **php_driver**: installs [CUBRID PHP driver](http://www.cubrid.org/wiki_apis/entry/cubrid-php-driver) (*same version as CUBRID Database*).
-- **python_driver**: installs [CUBRID Python driver](http://www.cubrid.org/wiki_apis/entry/cubrid-python-driver) (*same version as CUBRID Database*).
+- **python_driver**: installs [CUBRID Python driver](http://www.cubrid.org/wiki_apis/entry/cubrid-python-driver) (*same version as CUBRID Database*). On CentOS/RedHat < 6, the Python driver is installed from source. On other platforms, it is installed from pip.
+- **python_driver_pip**: installs [CUBRID Python driver](http://www.cubrid.org/wiki_apis/entry/cubrid-python-driver) from pip.
+- **python_driver_source**: installs [CUBRID Python driver](http://www.cubrid.org/wiki_apis/entry/cubrid-python-driver) from source.
 - **shard**: configures [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) in multi VM environment.
+- **shard_mysql**: configures MySQL as a backend database for [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) in multi VM environment.
 - **web_manager**: installs [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager).
 
 ## Attributes
 
-Check the source code of the available attributes.
+Check the source code of the available attributes. All attributes are extensively commented.
 
 - [broker](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/broker.rb)
 - [database](https://github.com/kadishmal/cubrid-cookbook/blob/master/attributes/database.rb)
@@ -80,15 +83,18 @@ If you want to configure additional Brokers, use **broker** recipe.
 ```
 chef.json = {
     "cubrid" => {
-        "broker_count" => 10
+        "broker_count" => 1,
+        "min_num_appl_server" => 5,
+        "max_num_appl_server" => 40
     }
 }
+
 chef.add_recipe "cubrid::broker"
 ```
 
 This will:
 
-1. Add specified number of CUBRID Brokers and update the configuration file (*cubrid_broker.conf*).
+1. Add specified number of CUBRID Brokers and set [`MIN_NUM_APPL_SERVER`](http://www.cubrid.org/manual/843/en/Parameter%20by%20Broker) and [`MAX_NUM_APPL_SERVER`](http://www.cubrid.org/manual/843/en/Parameter%20by%20Broker) parameters to each broker in Broker configuration file (*[cubrid_broker.conf](http://www.cubrid.org/manual/843/en/cubrid_broker.conf%20Configuration%20File%20and%20Default%20Parameters)*).
 2. Restart the CUBRID Broker Service if the configuration file has been updated.
 
 ### CUBRID Database
@@ -121,6 +127,15 @@ This will:
 6. Override CUBRID configuration file (*cubrid.conf*) with user defined or default values.
 7. Start CUBRID Service.
 8. When installed on CentOS, this **default** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **default** recipe will add `ACCEPT` rules for CUBRID ports (*but not all; HA port will be opened by **ha** recipe, Web Manager port by **web_manager** recipe, SHARD port by **shard** recipe*) such as **30000:30100**, **33000:33100**, **8001:8003**, **1523**. Detailed explanation of all ports used by CUBRID can be found at [http://www.cubrid.org/port_iptables_configuration](http://www.cubrid.org/port_iptables_configuration).
+
+**Note:** the **cubrid** cookbook will be installed by **root** user. For this reason in order to work with CUBRID once installed, you need to be logged in as a **root**. To login as a root, run the following command:
+
+    sudo su -
+
+Then run any cubrid command such as:
+
+    cubrid service status
+    
 
 ### CUBRID demodb database
 
@@ -289,34 +304,76 @@ This will:
 
 If you want to have your databases sharded by [CUBRID SHARD](http://www.cubrid.org/manual/843/en/CUBRID%20HA) on multi VM environment, use **shard** recipe.
 
-This recipe depends on **cubrid::default** recipe.
-
 ```
+chef.json = {
+    "cubrid" => {
+        "shard_db" => "sharddb",
+        "shard_user" => "shard",
+        "shard_user_password" => "shard123",
+        "shard_hosts" => [
+            {"node1" => "10.11.12.13"},
+            {"node2" => "10.11.12.14"}
+        ],
+        "shard_broker_port" => 45011
+    }
+}
+
 chef.add_recipe "cubrid::shard"
 ```
 
 This will:
 
 1. Check if `shard_db` and `shard_hosts` attributes are provided by a user. That is, you **must** specify the database name and a list of hosts you want to shard this database among.
-
-        chef.json = {
-            "cubrid" => {
-                "shard_db" => "sharddb",
-                "shard_hosts" => [
-                    {"node1" => "10.11.12.13"},
-                    {"node2" => "10.11.12.14"}
-                ]
-            }
-        }
-
-	If `ha_hosts` is not provided, an error will be raise saying: **Cannot configure CUBRID SHARD without shard_db and shard_hosts. Refer to "shard_db" and "shard_hosts" attributes in /cubrid/attributes/shard.rb for the syntax.**
-2. Create and auto start a `shard_db` database, if it is not already created, which will be shard among `shard_hosts`.
+If `shard_hosts` is not provided, an error will be raise saying: **Cannot configure CUBRID SHARD without shard_db and shard_hosts. Refer to "shard_db" and "shard_hosts" attributes in /cubrid/attributes/shard.rb for the syntax.**
+2. Create and auto start a `shard_db` database, if it is not already created, which will be sharded among `shard_hosts`.
 3. Update */etc/hosts* with new **IP - host** values defined in `shard_hosts`, if it is not already updated.
 4. Update *conf/shard.conf*.
 5. Update *conf/shard_key.txt*.
 6. Update *conf/shard_connection.txt*.
-7. Start CUBRID SHARD Service.
+7. Start CUBRID SHARD Service on the last of the `shard_hosts`.
 8. When installed on CentOS, this **shard** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **shard** recipe will add an `ACCEPT` rule for CUBRID SHARD port which is **45011** by default.
+
+### MySQL Database Sharding via CUBRID SHARD
+
+CUBRID SHARD allows to configure CUBRID or MySQL as a backend database. If you want to use MySQL as a backend for [CUBRID SHARD](http://www.cubrid.org/manual/843/en/CUBRID%20HA) on multi VM environment, use **shard_mysql** recipe.
+
+This recipe depends on **mysql** and **database** cookbooks.
+
+```
+chef.json = {
+    "cubrid" => {
+        "shard_db" => "sharddb",
+        "shard_user" => "shard",
+        "shard_user_password" => "shard123",
+        "shard_hosts" => [
+            {"node1" => "10.11.12.13"},
+            {"node2" => "10.11.12.14"}
+        ],
+        "shard_broker_port" => 45011
+    },
+    "mysql" => {
+        "server_root_password" => "your_root_password",
+        "server_repl_password" => "your_root_password",
+        "server_debian_password" => "your_root_password"
+    }
+}  
+
+chef.add_recipe "cubrid::shard_mysql"
+```
+
+This will:
+
+1. Check if `shard_db` and `shard_hosts` attributes are provided by a user. That is, you **must** specify the database name and a list of hosts you want to shard this database among.
+If `shard_hosts` is not provided, an error will be raise saying: **Cannot configure CUBRID SHARD without shard_db and shard_hosts. Refer to "shard_db" and "shard_hosts" attributes in /cubrid/attributes/shard.rb for the syntax.**
+2. Update */etc/hosts* with new **IP - host** values defined in `shard_hosts`, if it is not already updated.
+3. Install CUBRID and MySQL Servers if they are not installed.
+4. Create a `shard_db` database in MySQL Server, if it is not already created, which will be sharded among `shard_hosts`.
+5. Create `shard_user` database user in MySQL and grant all rights to `shard_db` database on `localhost` as well as the remote node where CUBRID SHARD will be started.
+5. Update *conf/shard.conf*.
+5. Update *conf/shard_key.txt*.
+6. Update *conf/shard_connection.txt*.
+7. Start CUBRID SHARD Service on the last of the `shard_hosts`.
+8. When installed on CentOS, this **shard_mysql** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **shard_mysql** recipe will add an `ACCEPT` rule for CUBRID SHARD port which is **45011** by default, and MySQL **3306** port.
 
 ### CUBRID Web Manager
 
@@ -330,7 +387,7 @@ This will:
 
 1. Stop [CUBRID Manager Server](http://www.cubrid.org/manual/90/en/CUBRID%20Manager%20Server) service.
 2. Check the version of the installed CUBRID Web Manager.
-3. If CWM is not installed or its version is older than a new available version, download the new package (`tar.gz`) from [CUBRID SF.net repository](http://sourceforge.net/projects/cubrid/files/). CWM version will be the same as the main CUBRID Database.
+3. If CWM is not installed or its *minor* version is older than a new available version, download the new package (`tar.gz`) from [CUBRID SF.net repository](http://sourceforge.net/projects/cubrid/files/). CWM version will remain the same as the main CUBRID Database.
 4. Extract the downloaded package to */opt/cubrid/*. This will override or add CWM binaries to */bin*, */conf*, and */share* directories.
 5. Remove the downloaded archive and extracted directory.
 6. Override the configuration file for CWM, if it is not already overriden.
@@ -347,7 +404,6 @@ The default username and password to connect to CUBRID Manager Server are **admi
 - Allow users to specify custom port for CUBRID HA.
 - Test on a vanilla CentOS.
 - Validate the database name.
-- Check if it's possible to add MySQL as a backend to CUBRID SHARD.
 
 ## License and Authors
 

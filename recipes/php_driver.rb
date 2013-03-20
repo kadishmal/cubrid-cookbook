@@ -6,7 +6,6 @@
 #
 # Distributed under MIT license
 #
-include_recipe "build-essential"
 include_recipe "php"
 include_recipe "cubrid"
 
