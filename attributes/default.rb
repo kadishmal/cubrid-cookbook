@@ -7,6 +7,8 @@
 # Distributed under MIT license
 #
 
+include_attribute "cubrid::broker"
+
 # latest build numbers for each CUBRID version in the form of 'version'=>'build_number'
 build_numbers = {'9.0.0' => '0478', '8.4.3' => '1005', '8.4.1' => '7007'}
 
@@ -27,6 +29,12 @@ set['cubrid']['tar_url'] = "https://sourceforge.net/projects/cubrid/files/CUBRID
 default['cubrid']['user_home_dir'] = "/home/vagrant"
 # the target directory to install CUBRID
 default['cubrid']['home'] = "/opt/cubrid"
+
+# Set the maximum number of clients this Server should respond to.
+# +1 is for Query Editory Broker.
+# Calculated based on the recommendation from the manual page
+# http://www.cubrid.org/manual/843/en/Connection-Related%20Parameters
+default['cubrid']['max_clients'] = node['cubrid']['max_num_appl_server'] * (node['cubrid']['broker_count'] + 1) + 10
 
 # The configurations directory.
 set['cubrid']['conf_dir'] = "#{node['cubrid']['home']}/conf"

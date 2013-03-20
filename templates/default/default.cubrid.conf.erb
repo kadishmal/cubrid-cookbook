@@ -54,7 +54,7 @@ sort_buffer_size=2M
 
 # The maximum number of concurrent client connections the server will accept.
 # This value also means the total # of concurrent transactions.
-max_clients=100
+max_clients=<%= "#{node['cubrid']['max_clients']}" %>
 
 # TCP port id for the CUBRID programs (used by all clients).
 cubrid_port_id=1523
