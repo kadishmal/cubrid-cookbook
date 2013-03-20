@@ -24,13 +24,13 @@ if !node['cubrid']['ha_hosts'].empty?
 		end
 
 		ruby_block "add hosts to databases.txt for #{db} database" do
-      block do
-        databases_txt = Chef::Util::FileEdit.new("#{DATABASES_TXT}")
-				databases_txt.search_file_replace(/#{db}[\t\s]+localhost/, "#{db}	#{node['cubrid']['ha_hosts_list']}")
-				databases_txt.write_file
-      end
-      only_if "egrep '#{db}[\t\s]+localhost' #{DATABASES_TXT}"
-    end
+	      block do
+	        databases_txt = Chef::Util::FileEdit.new("#{DATABASES_TXT}")
+			databases_txt.search_file_replace(/#{db}[\t\s]+localhost/, "#{db}	#{node['cubrid']['ha_hosts_list']}")
+			databases_txt.write_file
+	      end
+	      only_if "egrep '#{db}[\t\s]+localhost' #{DATABASES_TXT}"
+	    end
 	end
 
 	# Add host and IP information to /etc/hosts file.
