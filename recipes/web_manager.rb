@@ -26,8 +26,13 @@ def getCurrentInstalledVersion
     cmd = Mixlib::ShellOut.new(version_check_cmd)
     version = cmd.run_command
 
-    version.stdout.split(delimeter)[1].strip.gsub(/[';]/, "")
-  rescue Chef::Exceptions::ShellCommandFailed
+    output = version.stdout
+
+    if output.length > 0
+      output.split(delimeter)[1].strip.gsub(/[';]/, "")
+    else
+      output
+    end
   rescue Mixlib::ShellOut::ShellCommandFailed
   end
 end
@@ -41,7 +46,7 @@ current_installed_version = getCurrentInstalledVersion
 # than the one defined in the recipe attributes.
 # Also make sure the compatible version is installed, so that
 # 9.0.0 version doesn't override 8.4.1 version.
-if current_installed_version < node['cubrid']['cwm_full_version'] && current_installed_version.index(node['cubrid']['version']) == 0
+if current_installed_version.length == 0 || current_installed_version < node['cubrid']['cwm_full_version'] && current_installed_version.index(node['cubrid']['version']) == 0
   remote_file CWM_BINARY do
     action :create_if_missing
     source "#{node['cubrid']['cwm_tar_url']}"
