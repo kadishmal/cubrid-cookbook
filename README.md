@@ -25,7 +25,7 @@ Tested on:
 - CentOS 6.0 x64
 	- Vagrant box: *[CentOS 6.0 minimal](http://dl.dropbox.com/u/9227672/CentOS-6.0-x86_64-netboot-4.1.6.box)* (362MB)
 - CentOS 6.3 x64
-	- Vagrant box: *[CentOS 6.3 minimal](https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box)* (310MB)
+	- Vagrant box: *[CentOS 6.3 minimal](http://sourceforge.net/projects/cubrid/files/CUBRID-Demo-Virtual-Machines/Vagrant/vagrant-virtualbox-centos-6.3-x64-minimal.box/download)* (296MB)
 
 ##Requirements
 
@@ -367,6 +367,9 @@ This will:
 If `shard_hosts` is not provided, an error will be raise saying: **Cannot configure CUBRID SHARD without shard_db and shard_hosts. Refer to "shard_db" and "shard_hosts" attributes in /cubrid/attributes/shard.rb for the syntax.**
 2. Update */etc/hosts* with new **IP - host** values defined in `shard_hosts`, if it is not already updated.
 3. Install CUBRID and MySQL Servers if they are not installed.
+4. Override two MySQL parameters in my.cnf:
+	1. `bind_address` to an empty string meaning disable `bind-address`.
+	2. `wait_timeout` to [MySQL's default](http://dev.mysql.com/doc/refman/5.1/en/server-system-variables.html#sysvar_wait_timeout) **28800** for CUBRID SHARD to work as expected. See [shard_mysql](https://github.com/kadishmal/cubrid-cookbook/blob/master/recipes/shard_mysql.rb) recipe source for comments.
 4. Create a `shard_db` database in MySQL Server, if it is not already created, which will be sharded among `shard_hosts`.
 5. Create `shard_user` database user in MySQL and grant all rights to `shard_db` database on `localhost` as well as the remote node where CUBRID SHARD will be started.
 5. Update *conf/shard.conf*.

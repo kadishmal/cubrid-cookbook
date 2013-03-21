@@ -30,6 +30,14 @@ if node['cubrid']['version'] >= "8.4.3"
 		# Since in SHARD environment we need to allow the remote SHARD node to
 		# access all other shard databases, make sure MySQL's bind-address is not set.
 		node.override['mysql']['bind_address'] = ''
+		# 28800 is the default MySQL 5.1 configuration, so return it back.
+		# The reason is that CUBRID SHARD relies on this value, i.e. it assumes
+		# the connection between CUBRID SHARD and MySQL is open during this period.
+		# If a smaller value is set, CUBRID SHARD will report "2006:MySQL server has gone away"
+		# error for the first connection established after the wait_timeout. For every next
+		# connection, CUBRID SHARD will reestablish the connection and work fine.
+		# So, for predictable behavior we must keep the default value.
+		node.override['mysql']['tunable']['wait_timeout'] = 28800
 
 		# Install MySQL Server and its Client tools.
 		include_recipe "mysql::server"
