@@ -1,6 +1,12 @@
 ## Description
 
-Provides recipies to install [CUBRID Database](http://www.cubrid.org) (*version 9.0, 8.4.3, and 8.4.1*), CUBRID PDO, PHP, Perl, and Python drivers (*see [Recipies](#recipes) below*), [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager), create the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) or any number of other user defined databases, automatically configure CUBRID HA and [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) in multi VM environment, and confirgure additional brokers.
+Provides recipies to:
+
+- install [CUBRID Database](http://www.cubrid.org) (*version 9.1, 9.0, 8.4.3, and 8.4.1*), CUBRID PDO, PHP, Perl, and Python drivers (*see [Recipies](#recipes) below*), as well as [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager);
+- create the [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) or any number of other user defined databases;
+- automatically configure CUBRID HA and [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) in multi VM environment;
+- CUBRID SHARD can be configured with both CUBRID and MySQL backends.
+- configure additional brokers.
 
 This **cubrid** cookbook is tested on [Vagrant](http://www.vagrantup.com/) boxes as well as plain vanilla Linux (*see [Platform](#platform) below*).
 
@@ -26,6 +32,8 @@ Tested on:
 	- Vagrant box: *[CentOS 6.0 minimal](http://dl.dropbox.com/u/9227672/CentOS-6.0-x86_64-netboot-4.1.6.box)* (362MB)
 - CentOS 6.3 x64
 	- Vagrant box: *[CentOS 6.3 minimal](http://sourceforge.net/projects/cubrid/files/CUBRID-Demo-Virtual-Machines/Vagrant/vagrant-virtualbox-centos-6.3-x64-minimal.box/download)* (296MB)
+
+**Note:** in order to use MySQL database sharding with CUBRID SHARD through **shard_mysql** recipe, CentOS 5.6~6.3 or Ubuntu 10.x is required as they provide MySQL 5.1. Ubuntu 12.04+ has remove MySQL 5.1 from their repositories. Support for MySQL 5.5 in **shard_mysql** recipe will be implemented soon.
 
 ##Requirements
 
@@ -390,12 +398,13 @@ This will:
 
 1. Stop [CUBRID Manager Server](http://www.cubrid.org/manual/90/en/CUBRID%20Manager%20Server) service.
 2. Check the version of the installed CUBRID Web Manager.
-3. If CWM is not installed or its *minor* version is older than a new available version, download the new package (`tar.gz`) from [CUBRID SF.net repository](http://sourceforge.net/projects/cubrid/files/). CWM version will remain the same as the main CUBRID Database.
+3. If CWM is not installed or its *patch* version is older than a new available version, download the new package (`tar.gz`) from [CUBRID SF.net repository](http://sourceforge.net/projects/cubrid/files/). CWM version will remain the same as the main CUBRID Database.
 4. Extract the downloaded package to */opt/cubrid/*. This will override or add CWM binaries to */bin*, */conf*, and */share* directories.
-5. Remove the downloaded archive and extracted directory.
-6. Override the configuration file for CWM, if it is not already overriden.
-7. Start CUBRID Manager Server service.
-8. When installed on CentOS, this **web_manager** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **web_manager** recipe will add an `ACCEPT` rule for CUBRID Web Manager port which is **8282** by default.
+5. If CUBRID files are not owned by **root**, change ownership to **root**.
+6. Remove the downloaded archive and extracted directory.
+7. Override the configuration file for CWM, if it is not already overriden.
+8. Start CUBRID Manager Server service.
+9. When installed on CentOS, this **web_manager** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **web_manager** recipe will add an `ACCEPT` rule for CUBRID Web Manager port which is **8282** by default.
 
 After CWM is installed, you can access it at [https://your_vm_ip_address:8282](https://your_vm_ip_address:8282). Notice **HTTPS** and **8282** port are used by default. These and other configurations can be adjusted. See [CUBRID Manager HTTPD Variables](http://www.cubrid.org/wiki_tools/entry/cubrid-manager-httpd-variables).
 
@@ -410,6 +419,7 @@ The default username and password to connect to CUBRID Manager Server are **admi
 - Add Chef and Ohai dependency `depends 'chef', '>= 1.1.2'` in metadata.rb.
 - In shard_mysql open MySQL ports only to main SHARD node.
 - In shard_mysql check if Ubuntu version is 10.x.
+- Add MySQL 5.5 support which is distributed in Ubuntu 12.04+.
 
 ## License and Authors
 
