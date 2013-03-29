@@ -37,26 +37,21 @@ action :create do
     # By default "dba" use has no password. But you can set one.
     # Check if the user has set a password.
     if new_resource.password != ""
-      # Make sure the database is stopped. It may be started if it was
-      # already created, eg. by "demodb" recipe.
-      execute "cubrid server stop #{DB}"
       # Change the password.
       execute "Change a user password for \"dba\" user in #{DB} database." do
-        command "csql -S -u dba #{DB} -c \"ALTER USER dba PASSWORD '#{new_resource.password}'\""
-        only_if "csql -S -u dba #{DB} -c \"SELECT 1 FROM db_root\""
+        command "csql #{DB} -c \"ALTER USER dba PASSWORD '#{new_resource.password}'\""
+        only_if "csql #{DB} -c \"SELECT 1 FROM db_root\""
       end
     end
   else
     # "dba" is a default user for any database. But user can add more users.
     # Check if the user has set a password.
     if new_resource.password != ""
-      # Make sure the database is stopped. It may be started if it was
-      # already created, eg. by "demodb" recipe.
-      execute "cubrid server stop #{DB}"
       # Create a new user.
       execute "Change a user password for \"#{new_resource.dbuser}\" user in #{DB} database." do
-        command "csql -S -u dba #{DB} -c \"CREATE USER #{new_resource.dbuser} PASSWORD '#{new_resource.password}'\""
-        only_if "csql -S -u dba #{DB} -c \"SELECT * FROM db_user WHERE STRCMP(\"name\", '#{new_resource.dbuser}') = 0;\" | grep 'no results'"
+        command "csql #{DB} -c \"CREATE USER #{new_resource.dbuser} PASSWORD '#{new_resource.password}'\""
+        only_if "csql #{DB} -c \"SELECT 1 FROM db_root\""
+        not_if "csql #{DB} -c \"SELECT name FROM db_user\" | grep -i '#{new_resource.dbuser}'"
       end
     end
   end
