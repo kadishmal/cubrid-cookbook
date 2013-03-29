@@ -8,10 +8,10 @@
 #
 
 # latest build numbers for each CUBRID PDO version in the form of 'version'=>'build_number'
-build_numbers = {'9.0.0' => '0001', '8.4.3' => '0001', '8.4.0' => '0002'}
+build_numbers = {'9.1.0' => '0001', '9.0.0' => '0001', '8.4.3' => '0001', '8.4.0' => '0002'}
 
 # the default version of CUBRID to install
-default['cubrid']['version'] = "9.0.0"
+default['cubrid']['version'] = "9.1.0"
 
 # for CUBRID 8.4.1 use PDO driver 8.4.0 as they are compatible.
 # No separeate PDO driver version was released for CUBRID 8.4.1.

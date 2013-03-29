@@ -10,10 +10,10 @@
 include_attribute "cubrid::broker"
 
 # latest build numbers for each CUBRID version in the form of 'version'=>'build_number'
-build_numbers = {'9.0.0' => '0478', '8.4.3' => '1005', '8.4.1' => '7007'}
+build_numbers = {'9.1.0' => '0212', '9.0.0' => '0478', '8.4.3' => '1005', '8.4.1' => '7007'}
 
 # the default version of CUBRID to install
-default['cubrid']['version'] = "9.0.0"
+default['cubrid']['version'] = "9.1.0"
 # the full version of CUBRID including the build number
 set['cubrid']['full_version'] = "#{node['cubrid']['version']}.#{build_numbers[node['cubrid']['version']]}"
 # the architecture of CUBRID binaries to install based on the current system architecture
@@ -30,6 +30,9 @@ default['cubrid']['user_home_dir'] = "/home/vagrant"
 # the target directory to install CUBRID
 default['cubrid']['home'] = "/opt/cubrid"
 
+default['cubrid']['charset'] = 'en_US'
+default['cubrid']['lang'] = 'en_US'
+
 # Set the maximum number of clients this Server should respond to.
 # +1 is for Query Editory Broker.
 # Calculated based on the recommendation from the manual page
@@ -40,6 +43,8 @@ default['cubrid']['max_clients'] = node['cubrid']['max_num_appl_server'] * (node
 set['cubrid']['conf_dir'] = "#{node['cubrid']['home']}/conf"
 # Full path to cubrid.conf.
 set['cubrid']['conf'] = "#{node['cubrid']['conf_dir']}/cubrid.conf"
+# full path to cm_httpd.conf
+set['cubrid']['cm_httpd_conf'] = "#{node['cubrid']['conf_dir']}/cm_httpd.conf"
 
 # the file name of the shell scipt which sets environmental variables for CUBRID
 set['cubrid']['env_script_name'] = "cubrid.sh"

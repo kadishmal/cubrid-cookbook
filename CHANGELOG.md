@@ -2,11 +2,17 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 2.3.0
+
+- New: added CUBRID 9.1 support to all recipes.
+- Enh: override `['mysql']['tunable']['wait_timeout']` to MySQL's default value 28800 for CUBRID SHARD to work as expected.
+- Enh: allow to set `MAX_NUM_APPL_SERVER` and `MIN_NUM_APPL_SERVER` SHARD broker configuration parameters.
+
 ## 2.2.0
 
 - New: allow to configure MySQL as a backend for CUBRID SHARD through **shard_mysql** recipe.
-- Enh: allow to set `MAX_NUM_APPL_SERVER` broker configuration paramter.
-- Enh: allow to set `MIN_NUM_APPL_SERVER` broker configuration paramter.
+- Enh: allow to set `MAX_NUM_APPL_SERVER` broker configuration parameter.
+- Enh: allow to set `MIN_NUM_APPL_SERVER` broker configuration parameter.
 - Enh: upgrade CUBRID Web Manager only if a minor upgrade is available.
 - Enh: allow to set `max_clients` CUBRID Server parameter based on the number of Brokers.
 - Ref: corrected code indendation.

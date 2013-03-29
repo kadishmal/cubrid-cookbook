@@ -407,6 +407,9 @@ The default username and password to connect to CUBRID Manager Server are **admi
 - Allow users to specify custom port for CUBRID HA.
 - Test on a vanilla CentOS.
 - Validate the database name.
+- Add Chef and Ohai dependency `depends 'chef', '>= 1.1.2'` in metadata.rb.
+- In shard_mysql open MySQL ports only to main SHARD node.
+- In shard_mysql check if Ubuntu version is 10.x.
 
 ## License and Authors
 

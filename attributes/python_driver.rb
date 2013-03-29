@@ -8,10 +8,10 @@
 #
 
 # Latest build numbers for each CUBRID Python version in the form of 'version'=>'build_number'.
-build_numbers = {'9.0.0' => '0001', '8.4.3' => '0003', '8.4.1' => '0001', '8.4.0' => '0001'}
+build_numbers = {'9.1.0' => '0001', '9.0.0' => '0001', '8.4.3' => '0003', '8.4.1' => '0001', '8.4.0' => '0001'}
 
 # The default version of CUBRID to install.
-default['cubrid']['version'] = "9.0.0"
+default['cubrid']['version'] = "9.1.0"
 
 # The defalut Python Development Package required to build Python modules.
 if platform_family?('rhel')

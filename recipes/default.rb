@@ -23,11 +23,13 @@ CUBRID_BINARY = "#{TEMP_DIR}/#{FILENAME}"
 CUBRID_HOME_DIR = "#{node['cubrid']['home']}"
 CUBRID_DATABASES_DIR = "#{CUBRID_HOME_DIR}/databases"
 CUBRID_CONF = "#{node['cubrid']['conf']}"
+CM_HTTPD_CONF = "#{node['cubrid']['cm_httpd_conf']}"
 ENV_SCRIPT = "#{node['cubrid']['env_script']}"
 
-ENV['CUBRID'] = "#{CUBRID_HOME_DIR}"
-ENV['CUBRID_DATABASES'] = "#{CUBRID_DATABASES_DIR}"
-ENV['CUBRID_LANG'] = "en_US"
+ENV['CUBRID'] = CUBRID_HOME_DIR
+ENV['CUBRID_DATABASES'] = CUBRID_DATABASES_DIR
+ENV['CUBRID_LANG'] = node['cubrid']['lang']
+ENV['CUBRID_CHARSET'] = node['cubrid']['charset']
 ENV['LD_LIBRARY_PATH'] = "#{CUBRID_HOME_DIR}/lib:#{ENV['LD_LIBRARY_PATH']}"
 ENV['PATH'] = "#{CUBRID_HOME_DIR}/bin:#{ENV['PATH']}"
 
@@ -76,6 +78,16 @@ end
 template CUBRID_CONF do
   source "default.cubrid.conf.erb"
   not_if "cat #{CUBRID_CONF} | grep 'Cookbook Name:: cubrid'"
+end
+
+# Update cm_httpd.conf. It is necessary to update CWM configuration here
+# because by default it comes with `user` HTTPD parameter commented out
+# which will cause a "getgrnam("nobody") failed" error if CUBRID is
+# installed via root user which is the case in cubrid-cookbook.
+# So, override the default CWM configurations with the one from templates.
+template CM_HTTPD_CONF do
+  source "cm_httpd.conf.erb"
+  not_if "cat #{CM_HTTPD_CONF} | grep 'Cookbook Name:: cubrid'"
 end
 
 # Start CUBRID Service.
