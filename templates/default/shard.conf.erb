@@ -37,6 +37,7 @@ KEEP_CONNECTION         =ON
 SHARD_DB_NAME           =<%= "#{node['cubrid']['shard_db']}" %>
 SHARD_DB_USER           =<%= "#{node['cubrid']['shard_user']}" %>
 SHARD_DB_PASSWORD       =<%= "#{node['cubrid']['shard_user_password']}" %>
+SHARD_KEY_MODULAR       =<%= "#{node['cubrid']['shard_key_modular']}" %>
 MIN_NUM_PROXY           =1
 MAX_NUM_PROXY           =1
 PROXY_LOG_FILE          =log/broker/proxy_log

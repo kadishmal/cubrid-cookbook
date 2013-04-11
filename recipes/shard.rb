@@ -11,6 +11,10 @@ include_recipe "cubrid"
 
 if node['cubrid']['version'] >= "8.4.3"
 	if node['cubrid']['shard_db'] != "" && !node['cubrid']['shard_hosts'].empty?
+		if node['cubrid']['shard_key_modular'] < node['cubrid']['shard_hosts'].length
+			Chef::Log.warn("`shard_key_modular` is less than the number of shard. Some shard will not be used.")
+		end
+
 		CUBRID_CONF = "#{node['cubrid']['conf']}"
 		SHARD_CONF = "#{node['cubrid']['shard_conf']}"
 		SHARD_CONNECTION_TXT = "#{node['cubrid']['shard_connection_txt']}"

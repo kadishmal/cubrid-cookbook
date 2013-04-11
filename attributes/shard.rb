@@ -19,6 +19,8 @@ default['cubrid']['shard_db'] = ""
 default['cubrid']['shard_user'] = "shard"
 # The default password for a SHARD database user.
 default['cubrid']['shard_user_password'] = "shard123"
+# The default value for `SHARD_KEY_MODULAR` parameter in CUBRID SHARD.
+default['cubrid']['shard_key_modular'] = 256
 # A default list of hosts for CUBRID SHARD in the form of array of hash objects
 # where each hash object represents a single shard
 # which contains a list of host=>ip key/values for HA (if necessary):
