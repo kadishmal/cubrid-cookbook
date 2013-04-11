@@ -28,8 +28,8 @@ if node['cubrid']['version'] >= "8.4.3"
 		end
 
 		# Since in SHARD environment we need to allow the remote SHARD node to
-		# access all other shard databases, make sure MySQL's bind-address is not set.
-		node.override['mysql']['bind_address'] = ''
+		# access all other shard databases, make sure MySQL's bind-address is set to `0.0.0.0`.
+		node.override['mysql']['bind_address'] = '0.0.0.0'
 		# 28800 is the default MySQL 5.1 configuration, so return it back.
 		# The reason is that CUBRID SHARD relies on this value, i.e. it assumes
 		# the connection between CUBRID SHARD and MySQL is open during this period.
