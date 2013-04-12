@@ -2,6 +2,18 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 2.3.1
+
+- New: updated Python driver to 9.1.0.0002 and 8.4.3.0004 versions.
+- Enh: no need to stop the database in order to `ALTER` or `CREATE` a user.
+- Enh: allow to override `SHARD_KEY_MODULAR` parameter in *shard* and *shard_mysql* recipes.
+- Enh: a better way to detect the current hostname of the machine.
+- Enh: in *shard_mysql* open MySQL port only to CUBRID SHARD node.
+- Enh: allow to install CUBRID SHARD on all nodes for load balancing.
+- Fix: instead of uncommenting MySQL's `bind-address`, set `0.0.0.0` to allow all hosts.
+- Fix: set shard key range based on shard key modular instead of hardcoding.
+- Doc: udpated README.
+
 ## 2.3.0
 
 - New: added CUBRID 9.1 support to all recipes.

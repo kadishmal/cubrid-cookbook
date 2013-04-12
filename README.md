@@ -143,7 +143,7 @@ This will:
 Then run any cubrid command such as:
 
     cubrid service status
-    
+
 
 ### CUBRID demodb database
 
@@ -338,7 +338,7 @@ If `shard_hosts` is not provided, an error will be raise saying: **Cannot config
 4. Update *conf/shard.conf*.
 5. Update *conf/shard_key.txt*.
 6. Update *conf/shard_connection.txt*.
-7. Start CUBRID SHARD Service on the last of the `shard_hosts`.
+7. Start CUBRID SHARD Service on the last of the `shard_hosts`. This means that if you want a specific node to run CUBRID SHARD, list it as the last element of the `shard_hosts` array. You can change the order of hosts anytime after you have started 
 8. When installed on CentOS, this **shard** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **shard** recipe will add an `ACCEPT` rule for CUBRID SHARD port which is **45011** by default.
 
 ### MySQL Database Sharding via CUBRID SHARD
@@ -364,7 +364,7 @@ chef.json = {
         "server_repl_password" => "your_root_password",
         "server_debian_password" => "your_root_password"
     }
-}  
+}
 
 chef.add_recipe "cubrid::shard_mysql"
 ```
@@ -383,7 +383,7 @@ If `shard_hosts` is not provided, an error will be raise saying: **Cannot config
 5. Update *conf/shard.conf*.
 5. Update *conf/shard_key.txt*.
 6. Update *conf/shard_connection.txt*.
-7. Start CUBRID SHARD Service on the last of the `shard_hosts`.
+7. Start CUBRID SHARD Service on the last of the `shard_hosts`. This means that if you want a specific node to run CUBRID SHARD, list it as the last element of the `shard_hosts` array.
 8. When installed on CentOS, this **shard_mysql** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **shard_mysql** recipe will add an `ACCEPT` rule for CUBRID SHARD port which is **45011** by default, and MySQL **3306** port.
 
 ### CUBRID Web Manager
@@ -417,9 +417,11 @@ The default username and password to connect to CUBRID Manager Server are **admi
 - Test on a vanilla CentOS.
 - Validate the database name.
 - Add Chef and Ohai dependency `depends 'chef', '>= 1.1.2'` in metadata.rb.
-- In shard_mysql open MySQL ports only to main SHARD node.
 - In shard_mysql check if Ubuntu version is 10.x.
 - Add MySQL 5.5 support which is distributed in Ubuntu 12.04+.
+- When setting `max_clients` in cubrid.conf, need to updated the `ulimit` of Linux because by defuault it allows to open 1024 files at a time. Depending on the `max_clients` size, `ulimit` has to be adjusted. See [http://posidev.com/blog/2009/06/04/set-ulimit-parameters-on-ubuntu/](http://posidev.com/blog/2009/06/04/set-ulimit-parameters-on-ubuntu/) for more instructions.
+- Add an `init.d` script to start CUBRID service on reboot.
+- Add travis testing script.
 
 ## License and Authors
 
