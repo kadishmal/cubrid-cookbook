@@ -18,7 +18,7 @@ if node['cubrid']['version'] >= "8.4.3"
 		SHARD_KEY_TXT = "#{node['cubrid']['shard_key_txt']}"
 
 		# Get the hostname of the last node specified in the `shard_hosts` array.
-		last_host_to_be_shard_broker = ""
+		shard_broker_host = {}
 
 		# Add host and IP information to /etc/hosts file.
 		# The last of all the hosts will be the SHARD Broker node.
@@ -28,7 +28,8 @@ if node['cubrid']['version'] >= "8.4.3"
 					not_if "egrep '\s#{host}\b' /etc/hosts"
 				end
 
-				last_host_to_be_shard_broker = host
+				shard_broker_host['host'] = host
+				shard_broker_host['ip'] = ip
 			end
 		end
 
@@ -36,7 +37,7 @@ if node['cubrid']['version'] >= "8.4.3"
 		# This will later be used to install CUBRID SHARD on this node or not.
 		# We need to strip `hostname`, which will remove all whitespaces at the beginning or the
 		# end of the string. By default, `hostname` includes a newline at the end.
-		this_node_is_shard_broker = `hostname`.strip.eql? last_host_to_be_shard_broker
+		this_node_is_shard_broker = `hostname`.strip.eql? shard_broker_host['host']
 
 		# Since in SHARD environment we need to allow the remote SHARD node to
 		# access all other shard databases, make sure MySQL's bind-address is set to `0.0.0.0`.
@@ -88,7 +89,7 @@ if node['cubrid']['version'] >= "8.4.3"
 		mysql_database_user node['cubrid']['shard_user'] do
 			connection mysql_connection_info
 			password node['cubrid']['shard_user_password']
-			host last_host_to_be_shard_broker
+			host shard_broker_host['host']
 			database_name node['cubrid']['shard_db']
 			action :grant
 		end
@@ -97,13 +98,13 @@ if node['cubrid']['version'] >= "8.4.3"
 		# We need to open CUBRID Shard and MySQL ports.
 		if platform?("centos", "fedora", "redhat")
 		  # Detailed explanation of all ports used below can be found at http://www.cubrid.org/port_iptables_configuration.
-		  # Port 59901 is CUBRID HA port.
 		  execute "iptables -I INPUT 1 -p tcp -m tcp --dport #{node['cubrid']['shard_broker_port']} -j ACCEPT" do
 		    only_if "test -f /sbin/iptables"
 		    # Do not open CUBRID SHARD port if this machine is not for CUBRID SHARD.
 		  	only_if "#{this_node_is_shard_broker}"
 		  end
-		  execute "iptables -I INPUT 1 -p tcp -m tcp --dport #{node['mysql']['port']} -j ACCEPT" do
+		  # Allow access to MySQL Server only from CUBRID SHARD machine.
+		  execute "iptables -I INPUT 1 -s #{shard_broker_host['ip']} -p tcp -m tcp --dport #{node['mysql']['port']} -j ACCEPT" do
 		    only_if "test -f /sbin/iptables"
 		  end
 		end
