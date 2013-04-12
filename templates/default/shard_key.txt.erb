@@ -5,18 +5,23 @@
 [%shard_key_column]
 #min	max	shard_id
 
-# By default SHARD_KEY_MODULAR = 256
-<% shard_key_modular = 256 -%>
+<% shard_key_modular = node['cubrid']['shard_key_modular'] -%>
 <% shard_key = 0 -%>
-<% shard_key_range = 31 -%>
-<% len = node['cubrid']['shard_hosts'].length - 1 -%>
+<% len = node['cubrid']['shard_hosts'].length -%>
+# We will assign at least two ranges per shard so that in the
+# future we could reshard data if necessary.
+<% shard_key_range = shard_key_modular / (len * 2) -%>
+<% shard_key_range = (shard_key_range > 0 ? shard_key_range : 1) -%>
+<% len = len - 1 -%>
 
 <% while shard_key < shard_key_modular -%>
 <% for i in 0..len do -%>
+<% if shard_key < shard_key_modular -%>
 <% from = shard_key -%>
-<% shard_key += shard_key_range -%>
+<% shard_key += (shard_key_modular - shard_key_range > from ? shard_key_range : shard_key_modular - 1 - from) -%>
 <%= "#{from}\t#{shard_key}\t#{i}" %>
 <% shard_key += 1 -%>
+<% end -%>
 <% end -%>
 <% end -%>
 
