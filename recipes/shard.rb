@@ -51,29 +51,29 @@ if node['cubrid']['version'] >= "8.4.3"
 		  end
 		end
 
-		# Update shard.conf.
-		template SHARD_CONF do
-		  source "shard.conf.erb"
-		  not_if "cat #{SHARD_CONF} | grep 'Cookbook Name:: cubrid'"
-		end
+		# We need to strip `hostname`, which will remove all whitespaces at the beginning or the
+		# end of the string. By default, `hostname` includes a newline at the end.
+		if `hostname`.strip.eql? last_host_to_be_shard_broker
+			# Update shard.conf.
+			template SHARD_CONF do
+			  source "shard.conf.erb"
+			  not_if "cat #{SHARD_CONF} | grep 'Cookbook Name:: cubrid'"
+			end
 
-		# Update shard_connection.txt.
-		template SHARD_CONNECTION_TXT do
-		  source "shard_connection.txt.erb"
-		  not_if "cat #{SHARD_CONNECTION_TXT} | grep 'Cookbook Name:: cubrid'"
-		end
+			# Update shard_connection.txt.
+			template SHARD_CONNECTION_TXT do
+			  source "shard_connection.txt.erb"
+			  not_if "cat #{SHARD_CONNECTION_TXT} | grep 'Cookbook Name:: cubrid'"
+			end
 
-		# Update shard_keys.txt.
-		template SHARD_KEY_TXT do
-		  source "shard_key.txt.erb"
-		  not_if "cat #{SHARD_KEY_TXT} | grep 'Cookbook Name:: cubrid'"
-		end
+			# Update shard_keys.txt.
+			template SHARD_KEY_TXT do
+			  source "shard_key.txt.erb"
+			  not_if "cat #{SHARD_KEY_TXT} | grep 'Cookbook Name:: cubrid'"
+			end
 
-		execute "echo #{last_host_to_be_shard_broker}"
-
-		# Start CUBRID SHARD service
-		execute "cubrid shard start" do
-		  only_if "hostname | grep '#{last_host_to_be_shard_broker}'"
+			# Start CUBRID SHARD service.
+			execute "cubrid shard start"
 		end
 	else
 		raise Chef::Exceptions::AttributeNotFound, "Please set the name of a SHARD database. Refer to \"shard_db\" attribute in /cubrid/attributes/shard.rb for the syntax."

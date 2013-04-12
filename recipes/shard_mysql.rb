@@ -17,6 +17,7 @@ if node['cubrid']['version'] >= "8.4.3"
 		SHARD_CONNECTION_TXT = "#{node['cubrid']['shard_connection_txt']}"
 		SHARD_KEY_TXT = "#{node['cubrid']['shard_key_txt']}"
 
+		# Get the hostname of the last node specified in the `shard_hosts` array.
 		last_host_to_be_shard_broker = ""
 
 		# Add host and IP information to /etc/hosts file.
@@ -30,6 +31,12 @@ if node['cubrid']['version'] >= "8.4.3"
 				last_host_to_be_shard_broker = host
 			end
 		end
+
+		# Whether or not the hostname of the current node is same as the to-be-shard node's hostname.
+		# This will later be used to install CUBRID SHARD on this node or not.
+		# We need to strip `hostname`, which will remove all whitespaces at the beginning or the
+		# end of the string. By default, `hostname` includes a newline at the end.
+		this_node_is_shard_broker = `hostname`.strip.eql? last_host_to_be_shard_broker
 
 		# Since in SHARD environment we need to allow the remote SHARD node to
 		# access all other shard databases, make sure MySQL's bind-address is set to `0.0.0.0`.
@@ -48,8 +55,8 @@ if node['cubrid']['version'] >= "8.4.3"
 		include_recipe "mysql::client"
 		# Load database cookbook which will allow us to create MySQL databases and users.
 		include_recipe "database::mysql"
-		# Now install CUBRID which comes with CUBRID SHARD.
-		include_recipe "cubrid"
+		# Install CUBRID SHARD only if this machine is where CUBRID SHARD should run.
+		include_recipe "cubrid" if this_node_is_shard_broker
 
 		# The MySQL connection information for localhost.
 		mysql_connection_info = {:host => 'localhost',
@@ -93,34 +100,36 @@ if node['cubrid']['version'] >= "8.4.3"
 		  # Port 59901 is CUBRID HA port.
 		  execute "iptables -I INPUT 1 -p tcp -m tcp --dport #{node['cubrid']['shard_broker_port']} -j ACCEPT" do
 		    only_if "test -f /sbin/iptables"
+		    # Do not open CUBRID SHARD port if this machine is not for CUBRID SHARD.
+		  	only_if "#{this_node_is_shard_broker}"
 		  end
 		  execute "iptables -I INPUT 1 -p tcp -m tcp --dport #{node['mysql']['port']} -j ACCEPT" do
 		    only_if "test -f /sbin/iptables"
 		  end
 		end
 
-		# Update shard.conf.
-		template SHARD_CONF do
-		  source "shard_mysql.shard.conf.erb"
-		  not_if "cat #{SHARD_CONF} | grep 'Cookbook Name:: cubrid'"
-		end
-
-		# Update shard_connection.txt.
-		template SHARD_CONNECTION_TXT do
-		  source "shard_mysql.shard_connection.txt.erb"
-		  not_if "cat #{SHARD_CONNECTION_TXT} | grep 'Cookbook Name:: cubrid'"
-		end
-
-		# Update shard_keys.txt.
-		template SHARD_KEY_TXT do
-		  source "shard_key.txt.erb"
-		  not_if "cat #{SHARD_KEY_TXT} | grep 'Cookbook Name:: cubrid'"
-		end
-
 		# Start CUBRID SHARD service only on the last shard host which is determined to be
 		# a SHARD Broker node.
-		execute "cubrid shard start" do
-		  only_if "hostname | grep '#{last_host_to_be_shard_broker}'"
+		if this_node_is_shard_broker
+			# Update shard.conf.
+			template SHARD_CONF do
+			  source "shard_mysql.shard.conf.erb"
+			  not_if "cat #{SHARD_CONF} | grep 'Cookbook Name:: cubrid'"
+			end
+
+			# Update shard_connection.txt.
+			template SHARD_CONNECTION_TXT do
+			  source "shard_mysql.shard_connection.txt.erb"
+			  not_if "cat #{SHARD_CONNECTION_TXT} | grep 'Cookbook Name:: cubrid'"
+			end
+
+			# Update shard_keys.txt.
+			template SHARD_KEY_TXT do
+			  source "shard_key.txt.erb"
+			  not_if "cat #{SHARD_KEY_TXT} | grep 'Cookbook Name:: cubrid'"
+			end
+
+			execute "cubrid shard start"
 		end
 	else
 		raise Chef::Exceptions::AttributeNotFound, "Please set the name of a SHARD database. Refer to \"shard_db\" attribute in /cubrid/attributes/shard.rb for the syntax."
