@@ -8,28 +8,28 @@
 #
 
 action :create do
-  DB = "#{new_resource.name}"
-  DIR = "#{node['cubrid']['databases_dir']}/#{DB}"
-  LOG_DIR = "#{DIR}/log"
+  db = "#{new_resource.name}"
+  dir = "#{node['cubrid']['databases_dir']}/#{db}"
+  log_dir = "#{dir}/log"
 
   # create a directory for this database
-  directory "#{DIR}" do
-    not_if "test -d #{DIR}"
+  directory "#{dir}" do
+    not_if "test -d #{dir}"
   end
 
   # create a directory to store database logs
-  directory "#{LOG_DIR}" do
-    not_if "test -d #{LOG_DIR}"
+  directory "#{log_dir}" do
+    not_if "test -d #{log_dir}"
   end
 
   # create this new database
   execute "cubrid createdb \
             --db-volume-size=#{node['cubrid']['db_volume_size']} \
             --log-volume-size=#{node['cubrid']['log_volume_size']} \
-            --log-path=#{LOG_DIR} \
-            #{DB}" do
-    cwd "#{DIR}"
-    not_if "test -f #{DIR}/#{DB}"
+            --log-path=#{log_dir} \
+            #{db}" do
+    cwd "#{dir}"
+    not_if "test -f #{dir}/#{db}"
   end
 
   # Add a new database user or set a password.
@@ -38,9 +38,9 @@ action :create do
     # Check if the user has set a password.
     if new_resource.password != ""
       # Change the password.
-      execute "Change a user password for \"dba\" user in #{DB} database." do
-        command "csql #{DB} -c \"ALTER USER dba PASSWORD '#{new_resource.password}'\""
-        only_if "csql #{DB} -c \"SELECT 1 FROM db_root\""
+      execute "Change a user password for \"dba\" user in #{db} database." do
+        command "csql #{db} -c \"ALTER USER dba PASSWORD '#{new_resource.password}'\""
+        only_if "csql #{db} -c \"SELECT 1 FROM db_root\""
       end
     end
   else
@@ -48,17 +48,17 @@ action :create do
     # Check if the user has set a password.
     if new_resource.password != ""
       # Create a new user.
-      execute "Change a user password for \"#{new_resource.dbuser}\" user in #{DB} database." do
-        command "csql #{DB} -c \"CREATE USER #{new_resource.dbuser} PASSWORD '#{new_resource.password}'\""
-        only_if "csql #{DB} -c \"SELECT 1 FROM db_root\""
-        not_if "csql #{DB} -c \"SELECT name FROM db_user\" | grep -i '#{new_resource.dbuser}'"
+      execute "Change a user password for \"#{new_resource.dbuser}\" user in #{db} database." do
+        command "csql #{db} -c \"CREATE USER #{new_resource.dbuser} PASSWORD '#{new_resource.password}'\""
+        only_if "csql #{db} -c \"SELECT 1 FROM db_root\""
+        not_if "csql #{db} -c \"SELECT name FROM db_user\" | grep -i '#{new_resource.dbuser}'"
       end
     end
   end
 
   if new_resource.autostart
     # Start this database.
-    execute "cubrid server start #{DB}"
+    execute "cubrid server start #{db}"
     # TODO: also update the cubrid.conf and set this database to be autostarted in the "server" parameter.
   end
 end
