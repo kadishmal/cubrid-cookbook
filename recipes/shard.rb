@@ -45,7 +45,6 @@ if node['cubrid']['version'] >= "8.4.3"
 		# We need to open CUBRID Shard port only.
 		if platform?("centos", "fedora", "redhat")
 		  # Detailed explanation of all ports used below can be found at http://www.cubrid.org/port_iptables_configuration.
-		  # Port 59901 is CUBRID HA port.
 		  execute "iptables -I INPUT 1 -p tcp -m tcp --dport #{node['cubrid']['shard_broker_port']} -j ACCEPT" do
 		    only_if "test -f /sbin/iptables"
 		  end

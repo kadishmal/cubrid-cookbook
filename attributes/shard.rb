@@ -9,10 +9,6 @@
 
 include_attribute "cubrid::database"
 
-#######################################################
-# the following are configurations for cubrid_ha.conf #
-#######################################################
-
 # A default database to shard. Will be created if it doesn't exist.
 default['cubrid']['shard_db'] = ""
 # The default database user for the SHARD database.
