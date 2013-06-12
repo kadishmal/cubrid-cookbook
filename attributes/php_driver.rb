@@ -7,13 +7,13 @@
 # Distributed under MIT license
 #
 
-# latest build numbers for each CUBRID PHP version in the form of 'version'=>'build_number'
-build_numbers = {'9.1.0' => '0001', '9.0.0' => '0001', '8.4.3' => '0001', '8.4.1' => '0006'}
+# Latest build numbers for each CUBRID PHP version in the form of 'version'=>'build_number'.
+build_numbers = {'9.1.0' => '0003', '9.0.0' => '0001', '8.4.3' => '0001', '8.4.1' => '0006'}
 
-# the default version of CUBRID to install
+# The default version of CUBRID PHP driver to install.
 default['cubrid']['version'] = "9.1.0"
 
-# the version of a CUBRID PHP driver to install from PECL
+# The version of a CUBRID PHP driver to install from PECL.
 set['cubrid']['php_version'] = "#{node['cubrid']['version']}.#{build_numbers[node['cubrid']['version']]}"
 # the name of a PECL package to install CUBRID PHP driver
 set['cubrid']['php_package'] = "CUBRID-#{node['cubrid']['php_version']}"

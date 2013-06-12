@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 2.3.2
+
+- Fix: in `databases.rb` provider fixed `warning: already initialized constant`.
+- Enh: update PHP and PDO drivers.
+- Ref: remove irrelevant comments.
+
 ## 2.3.1
 
 - New: updated Python driver to 9.1.0.0002 and 8.4.3.0004 versions.

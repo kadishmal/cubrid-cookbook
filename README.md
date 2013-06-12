@@ -26,12 +26,16 @@ Tested on:
 - Ubuntu 12.04 LTS x86/x64
 	- Official Ubuntu Image: *[Ubuntu 12.04.1 LTS](http://releases.ubuntu.com/precise/ubuntu-12.04.1-server-amd64.iso)* (657MB)
 	- Vagrant boxes: *[Ubuntu precise 32](http://files.vagrantup.com/precise32.box)* (299MB), *[Ubuntu precise 64](http://files.vagrantup.com/precise64.box)* (323MB)
+- Ubuntu 13.04 LTS x86/x64
+	- Official Ubuntu Vagrant box: *[Ubuntu raring 64](http://cloud-images.ubuntu.com/raring/current/raring-server-cloudimg-vagrant-amd64-disk1.box)* (295MB)
 - CentOS 5.6 x64
 	- Vagrant box: *[CentOS 5.6 minimal](http://dl.dropbox.com/u/9227672/centos-5.6-x86_64-netinstall-4.1.6.box)* (277MB)
 - CentOS 6.0 x64
 	- Vagrant box: *[CentOS 6.0 minimal](http://dl.dropbox.com/u/9227672/CentOS-6.0-x86_64-netboot-4.1.6.box)* (362MB)
 - CentOS 6.3 x64
 	- Vagrant box: *[CentOS 6.3 minimal](http://sourceforge.net/projects/cubrid/files/CUBRID-Demo-Virtual-Machines/Vagrant/vagrant-virtualbox-centos-6.3-x64-minimal.box/download)* (296MB)
+- CentOS 6.4 x86/x64
+	- Vagrant boxes: *[CentOS 6.4 x86 minimal](http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-i386-v20130427.box)* (416MB), *[CentOS 6.4 x64 minimal](http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130427.box)* (442MB)
 
 **Note:** in order to use MySQL database sharding with CUBRID SHARD through **shard_mysql** recipe, CentOS 5.6~6.3 or Ubuntu 10.x is required as they provide MySQL 5.1. Ubuntu 12.04+ has remove MySQL 5.1 from their repositories. Support for MySQL 5.5 in **shard_mysql** recipe will be implemented soon.
 
@@ -50,20 +54,20 @@ This **cubrid** cookbook has the following dependencies:
 
 **cubrid** cookbook provides the following recipes:
 
-- **broker**: configures additional [CUBRID Brokers](http://www.cubrid.org/blog/cubrid-life/the-cubrid-broker-story/).
-- **default**: installs the specified version of CUBRID Database. Available versions: 8.4.1, 8.4.3, 9.0.0  (*default*).
-- **demodb**: creates CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database.
-- **ha**: configures CUBRID HA in multi VM environment.
-- **new_dbs**: installs one or more databases defined by a user.
-- **pdo_cubrid**: installs [CUBRID PDO driver](http://www.cubrid.org/wiki_apis/entry/cubrid-pdo-driver) (*same version as CUBRID Database, except when CUBRID 8.4.1 is installed in which case PDO driver 8.4.0 is installed as they are compatible*).
-- **perl_driver**: installs [CUBRID Perl driver](http://www.cubrid.org/wiki_apis/entry/cubrid-perl-driver) (*same version as CUBRID Database*).
-- **php_driver**: installs [CUBRID PHP driver](http://www.cubrid.org/wiki_apis/entry/cubrid-php-driver) (*same version as CUBRID Database*).
-- **python_driver**: installs [CUBRID Python driver](http://www.cubrid.org/wiki_apis/entry/cubrid-python-driver) (*same version as CUBRID Database*). On CentOS/RedHat < 6, the Python driver is installed from source. On other platforms, it is installed from pip.
-- **python_driver_pip**: installs [CUBRID Python driver](http://www.cubrid.org/wiki_apis/entry/cubrid-python-driver) from pip.
-- **python_driver_source**: installs [CUBRID Python driver](http://www.cubrid.org/wiki_apis/entry/cubrid-python-driver) from source.
-- **shard**: configures [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) in multi VM environment.
-- **shard_mysql**: configures MySQL as a backend database for [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) in multi VM environment.
-- **web_manager**: installs [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager).
+- [broker](#cubridbroker): configures additional [CUBRID Brokers](http://www.cubrid.org/blog/cubrid-life/the-cubrid-broker-story/).
+- [default](#cubriddatabase): installs the specified version of CUBRID Database. Available versions: 8.4.1, 8.4.3, 9.0.0  (*default*).
+- [demodb](#cubriddemodbdatabase): creates CUBRID's [demodb](http://www.cubrid.org/wiki_tutorials/entry/getting-started-with-demodb-cubrid-demo-database) database.
+- [ha](#cubridha): configures CUBRID HA in multi VM environment.
+- [new_dbs](#createnewdatabases): create one or more databases defined by a user.
+- [pdo_cubrid](#cubridpdodriver): installs [CUBRID PDO driver](http://www.cubrid.org/wiki_apis/entry/cubrid-pdo-driver) (*same version as CUBRID Database, except when CUBRID 8.4.1 is installed in which case PDO driver 8.4.0 is installed as they are compatible*).
+- [perl_driver](#cubridperldriver): installs [CUBRID Perl driver](http://www.cubrid.org/wiki_apis/entry/cubrid-perl-driver) (*same version as CUBRID Database*).
+- [php_driver](#cubridphpdriver): installs [CUBRID PHP driver](http://www.cubrid.org/wiki_apis/entry/cubrid-php-driver) (*same version as CUBRID Database*).
+- [python_driver](#cubridpythondriver): installs [CUBRID Python driver](http://www.cubrid.org/wiki_apis/entry/cubrid-python-driver) (*same version as CUBRID Database*). On CentOS/RedHat < 6, the Python driver is installed from source. On other platforms, it is installed from pip.
+- [python_driver_pip](#python_driver_pip): installs [CUBRID Python driver](http://www.cubrid.org/wiki_apis/entry/cubrid-python-driver) from pip.
+- [python_driver_source](#python_driver_source): installs [CUBRID Python driver](http://www.cubrid.org/wiki_apis/entry/cubrid-python-driver) from source.
+- [shard](#cubridshard): configures [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) in multi VM environment.
+- [shard_mysql](#mysqldatabaseshardingviacubridshard): configures MySQL as a backend database for [CUBRID SHARD](http://www.cubrid.org/blog/news/announcing-cubrid-9-0-with-3x-performance-increase-and-sharding-support/) in multi VM environment.
+- [web_manager](#cubridwebmanager): installs [CUBRID Web Manager](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager).
 
 ## Attributes
 
@@ -209,7 +213,14 @@ This will:
 
 ### CUBRID PDO driver
 
-If you want to install CUBRID PDO driver, use **pdo_cubrid** recipe. This recipe depends on the **cubrid::default** recipe.
+If you want to install CUBRID PDO driver, use **pdo_cubrid** recipe.
+
+#### Dependencies
+
+- [php](https://github.com/opscode-cookbooks/php) cookbook
+- if you want to install the PDO driver < v9.1.0, the **cubrid::default** recipe is also required since earlier version require CUBRID to be installed to access the CCI library. Since CUBRID PDO 9.1.0.0003, CCI library is included in PDO driver source code, so doesn't require CUBRID to be installed.
+
+#### Usage
 
 ```
 chef.add_recipe "cubrid::pdo_cubrid"
@@ -217,10 +228,10 @@ chef.add_recipe "cubrid::pdo_cubrid"
 
 This will:
 
-1. Install the `libgcrypt-devel` dependency library which is required to build PECL packages. In PHP 5.3.3 installed via YUM this library does not get installed by default.
-2. Install `php-pdo` module. If PHP is installed as a "package" (default), it get's installed from YUM. In this case PHP is configured with `--enable-pdo=shared` which means PDO module must be installed separately. See [http://jira.cubrid.org/browse/APIS-415](http://jira.cubrid.org/browse/APIS-415).
-3. Install CUBRID PDO driver from [PHP PECL Repository](http://pecl.php.net/package/PDO_CUBRID) if the PDO driver is not already installed (*same version as the previously installed CUBRID Database*).
-4. Create */etc/php5/conf.d/pdo_cubrid.ini*.
+1. Install CUBRID for PDO driver < 9.1.0, in case CUBRID is not already installed. 
+2. Install the `libgcrypt-devel` dependency library, which is required to build PECL packages, because in PHP 5.3.3 installed via YUM this library does not get installed by default.
+3. Install CUBRID PDO driver from [PHP PECL Repository](http://pecl.php.net/package/PDO_CUBRID) if the PDO driver is not already installed (*same version as the previously installed CUBRID Database*). If no CUBRID version is specified, defaults to the latest available vesion.
+4. Create */etc/php5/conf.d/pdo_cubrid.ini* to tell PHP to load CUBRID PDO driver.
 
 **Note**: this recipe as well as **php_driver** do not restart your Web server automatically because they do not know which Web server you use. So, if necessary, restart your Web server manually.
 
@@ -239,7 +250,14 @@ This will:
 
 ### CUBRID PHP driver
 
-If you also want to install CUBRID PHP driver, use **php_driver** recipe. This recipe depends on the **cubrid::default** recipe.
+If you also want to install CUBRID PHP driver, use **php_driver** recipe.
+
+#### Dependencies
+
+- [php](https://github.com/opscode-cookbooks/php) cookbook
+- if you want to install the PHP driver < v9.1.0, the **cubrid::default** recipe is also required since earlier version require CUBRID to be installed to access the CCI library. Since CUBRID PHP 9.1.0.0003, CCI library is included in PHP driver source code, so doesn't require CUBRID to be installed.
+
+#### Usage
 
 ```
 chef.add_recipe "cubrid::php_driver"
@@ -247,9 +265,10 @@ chef.add_recipe "cubrid::php_driver"
 
 This will:
 
-1. Install the `libgcrypt-devel` dependency library which is required to build PECL packages. In PHP 5.3.3 installed via YUM this library does not get installed by default.
-2. Install CUBRID PHP driver from [PHP PECL Repository](http://pecl.php.net/package/CUBRID) if it is not already installed (*same version as the previously installed CUBRID Database*).
-3. Create */etc/php5/conf.d/cubrid.ini*.
+1. Install CUBRID for PHP driver < 9.1.0, in case CUBRID is not already installed. 
+2. Install the `libgcrypt-devel` dependency library, which is required to build PECL packages, because in PHP 5.3.3 installed via YUM this library does not get installed by default.
+3. Install CUBRID PHP driver from [PHP PECL Repository](http://pecl.php.net/package/CUBRID) if it is not already installed (*same version as the previously installed CUBRID Database*). If no CUBRID version is specified, defaults to the latest available vesion.
+4. Create */etc/php5/conf.d/cubrid.ini* to tell PHP to load CUBRID PHP driver.
 
 **Note**: this recipe as well as **pdo_cubrid** do not restart your Web server automatically because they do not know which Web server you use. So, if necessary, restart your Web server manually.
 
@@ -338,7 +357,7 @@ If `shard_hosts` is not provided, an error will be raise saying: **Cannot config
 4. Update *conf/shard.conf*.
 5. Update *conf/shard_key.txt*.
 6. Update *conf/shard_connection.txt*.
-7. Start CUBRID SHARD Service on the last of the `shard_hosts`. This means that if you want a specific node to run CUBRID SHARD, list it as the last element of the `shard_hosts` array. You can change the order of hosts anytime after you have started 
+7. Start CUBRID SHARD Service on the last of the `shard_hosts`. This means that if you want a specific node to run CUBRID SHARD, list it as the last element of the `shard_hosts` array. You can change the order of hosts anytime after you have started.
 8. When installed on CentOS, this **shard** recipe will auto configure the **iptables** firewall if *iptables* is installed. When *iptables* is installed, by default it `REJECT`'s all incoming connections. The **shard** recipe will add an `ACCEPT` rule for CUBRID SHARD port which is **45011** by default.
 
 ### MySQL Database Sharding via CUBRID SHARD

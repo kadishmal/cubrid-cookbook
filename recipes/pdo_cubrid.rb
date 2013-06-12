@@ -7,12 +7,15 @@
 # Distributed under MIT license
 #
 include_recipe "php"
-include_recipe "cubrid"
+# Since CUBRID PDO 9.1.0.0002, there is no need to install CUBRID. The driver already
+# includes the CCI driver.
+include_recipe "cubrid" if node['cubrid']['version'] < '9.1.0'
 
 CUBRID_PDO_INSTALLED = "pecl list | egrep '^PDO_CUBRID\s+#{node['cubrid']['pdo_version']}'"
 CUBRID_PDO_ENABLED = "php -i | grep 'Client API version => #{node['cubrid']['pdo_version']}'"
 
 # PHP 5.3.3 installed via YUM seems to be missing "libgcrypt-devel" library which is required to build PECL packages.
+# On other platforms, `php533_deps` is an empty array, so will not install anything.
 # See http://jira.cubrid.org/browse/APIS-414
 node['cubrid']['php533_deps'].each do |pkg|
 	package pkg do
@@ -21,7 +24,7 @@ node['cubrid']['php533_deps'].each do |pkg|
 	end
 end
 
-# Also, when PHP is installed as a "package" (default), it get's installed from YUM. In this case
+# Also, when PHP is installed as a "package" (default), it gets installed from YUM. In this case
 # PHP is configured with "--enable-pdo=shared" which means PDO module must be installed separately.
 # See http://jira.cubrid.org/browse/APIS-415.
 major_version = node['platform_version'].split('.').first.to_i
@@ -38,10 +41,14 @@ package pdo_pkg do
   only_if "php -i | grep 'enable-pdo=shared'"
 end
 
+# CUBRID PDO driver earlier than 9.1.0.0002 requires CUBRID CCI to be available on the same machine.
+# The installation package asks to enter the root directory path where the driver can be found,
+# so we echo the path.
 execute "echo '#{node['cubrid']['home']}' | pecl install #{node['cubrid']['pdo_package']}" do
   not_if "#{CUBRID_PDO_INSTALLED}"
 end
 
+# Create .ini file to tell PHP to load CUBRID extension.
 template "#{node['cubrid']['pdo_ext_conf']}" do
   source "pdo_cubrid.ini.erb"
   owner "root"
