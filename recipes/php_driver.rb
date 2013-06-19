@@ -6,6 +6,7 @@
 #
 # Distributed under MIT license
 #
+include_recipe "build-essential"
 include_recipe "php"
 # Since CUBRID PHP 9.1.0.0003, there is no need to install CUBRID. The driver already
 # includes the CCI driver.

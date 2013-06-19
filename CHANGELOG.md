@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 2.3.3
+
+- Fix: make sure `build-essential` cookbook is included in `php_driver` and `pdo_cubrid` recipes.
+
 ## 2.3.2
 
 - Fix: in `databases.rb` provider fixed `warning: already initialized constant`.

@@ -6,6 +6,7 @@
 #
 # Distributed under MIT license
 #
+include_recipe "build-essential"
 include_recipe "php"
 # Since CUBRID PDO 9.1.0.0002, there is no need to install CUBRID. The driver already
 # includes the CCI driver.
