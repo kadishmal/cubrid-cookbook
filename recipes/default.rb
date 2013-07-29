@@ -32,6 +32,7 @@ ENV['CUBRID_LANG'] = node['cubrid']['lang']
 ENV['CUBRID_CHARSET'] = node['cubrid']['charset']
 ENV['LD_LIBRARY_PATH'] = "#{CUBRID_HOME_DIR}/lib:#{ENV['LD_LIBRARY_PATH']}"
 ENV['PATH'] = "#{CUBRID_HOME_DIR}/bin:#{ENV['PATH']}"
+BROKER_CONF = node['cubrid']['broker_conf']
 
 # Download the archive.
 remote_file CUBRID_BINARY do
@@ -78,6 +79,12 @@ end
 template CUBRID_CONF do
   source "default.cubrid.conf.erb"
   not_if "cat #{CUBRID_CONF} | grep 'Cookbook Name:: cubrid'"
+end
+
+# Update cubrid_broker.conf.
+template BROKER_CONF do
+  source "broker.cubrid_broker.conf.erb"
+  not_if "cat #{BROKER_CONF} | grep 'Cookbook Name:: cubrid'"
 end
 
 # Update cm_httpd.conf. It is necessary to update CWM configuration here
