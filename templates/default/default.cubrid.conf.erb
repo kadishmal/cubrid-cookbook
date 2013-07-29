@@ -50,7 +50,7 @@ log_buffer_size=4M
 # Size of sort buffer are using K, M, G, T unit
 # The sort buffer should be allocated per thread.
 # So, the max size of the sort buffer is sort_buffer_size * max_clients.
-sort_buffer_size=2M
+sort_buffer_size=<%= "#{node['cubrid']['sort_buffer_size']}" %>
 
 # The maximum number of concurrent client connections the server will accept.
 # This value also means the total # of concurrent transactions.
