@@ -32,7 +32,7 @@ execute "echo '#{node['cubrid']['home']}' | pecl install #{node['cubrid']['php_p
   not_if "#{CUBRID_PHP_INSTALLED}"
 end
 
-# Create .ini file to tell PHP to load CUBRID extension.
+# Create a php_driver.ini to tell PHP to load CUBRID extension.
 template "#{node['cubrid']['php_ext_conf']}" do
   source "php_driver.ini.erb"
   owner "root"

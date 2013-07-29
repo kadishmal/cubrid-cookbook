@@ -33,7 +33,5 @@ set['cubrid']['python_filename'] = "cubrid-python-#{node['cubrid']['python_versi
 # The full URL of the TAR archive to download.
 set['cubrid']['python_tar_url'] = "https://sourceforge.net/projects/cubrid/files/CUBRID-Drivers/Python_Driver/#{node['cubrid']['version']}/Linux/#{node['cubrid']['python_filename']}/download"
 
-# The home directory of a Vagrant user.
-default['cubrid']['user_home_dir'] = "/home/vagrant"
 # The target directory to install CUBRID.
 default['cubrid']['home'] = "/opt/cubrid"
