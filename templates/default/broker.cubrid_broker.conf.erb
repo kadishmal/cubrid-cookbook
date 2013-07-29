@@ -30,7 +30,8 @@ MAX_NUM_APPL_SERVER     =<%= "#{node['cubrid']['max_num_appl_server']}" %>
 APPL_SERVER_SHM_ID      =30000
 LOG_DIR                 =log/broker/sql_log
 ERROR_LOG_DIR           =log/broker/error_log
-SQL_LOG                 =ON
+SQL_LOG                 =<%= "#{node['cubrid']['sql_log']}" %>
+SLOW_LOG                =<%= "#{node['cubrid']['slow_log']}" %>
 TIME_TO_KILL            =120
 SESSION_TIMEOUT         =300
 KEEP_CONNECTION         =AUTO
