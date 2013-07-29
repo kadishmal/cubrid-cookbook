@@ -68,10 +68,10 @@ file "#{CUBRID_BINARY}" do
   only_if "test -f #{CUBRID_BINARY}"
 end
 
-# Set environment variables script which will run every time a user logs in
-execute "Set environment variables script" do
-  command "cp #{node['cubrid']['env_script_original']} #{ENV_SCRIPT}"
-  not_if "test -f #{ENV_SCRIPT}"
+# Set environment variables script which will run every time a user logs in.
+template ENV_SCRIPT do
+  source "share/rpm/cubrid.sh.erb"
+  not_if "cat #{ENV_SCRIPT} | grep 'Cookbook Name:: cubrid'"
 end
 
 # update cubrid.conf
