@@ -8,6 +8,7 @@ This file is used to list changes made in each version of this cubrid cookbook.
 - Enh: Allow to configure `sort_buffer_size` and `temp_file_memory_size_in_pages` server parameters.
 - Enh: set CUBRID environment script from a template file.
 - Enh: configure broker when installing CUBRID.
+- Enh: improved the default recipe.
 - Ref: updated comments.
 
 ## 2.3.3

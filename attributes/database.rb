@@ -13,9 +13,7 @@ default['cubrid']['home'] = "/opt/cubrid"
 # the directory to store CUBRID databases
 set['cubrid']['databases_dir'] = "#{node['cubrid']['home']}/databases"
 
-# "data_buffer_size" parameter value used in conf/cubrid.conf
-default['cubrid']['data_buffer_size'] = "100M"
 # "db_volume_size" parameter value used in conf/cubrid.conf
-default['cubrid']['db_volume_size'] = "100M"
+default['cubrid']['db_volume_size'] = "512M"
 # "log_volume_size" parameter value used in conf/cubrid.conf
 default['cubrid']['log_volume_size'] = "#{node['cubrid']['db_volume_size']}"

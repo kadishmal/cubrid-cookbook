@@ -10,28 +10,30 @@
 include_attribute "cubrid::broker"
 include_attribute "cubrid::database"
 
-# latest build numbers for each CUBRID version in the form of 'version'=>'build_number'
+# Latest build numbers for each CUBRID version in the form of 'version'=>'build_number'.
 build_numbers = {'9.1.0' => '0212', '9.0.0' => '0478', '8.4.3' => '1005', '8.4.1' => '7007'}
 
-# The default version of CUBRID to install
+# The default version of CUBRID to install.
 default['cubrid']['version'] = "9.1.0"
-# The full version of CUBRID including the build number
+# The full version of CUBRID including the build number.
 set['cubrid']['full_version'] = "#{node['cubrid']['version']}.#{build_numbers[node['cubrid']['version']]}"
-# The architecture of CUBRID binaries to install based on the current system architecture
+# The architecture of CUBRID binaries to install based on the current system architecture.
 set['cubrid']['arch'] = node['kernel']['machine'] =~ /x86_64/ ? "x86_64" : "i386"
 
-# The file name of the archive to download
+# The file name of the archive to download.
 set['cubrid']['filename'] = "CUBRID-#{node['cubrid']['full_version']}-linux.#{node['cubrid']['arch']}.tar.gz"
 
-# the full URL of the TAR archive to download
-set['cubrid']['tar_url'] = "https://sourceforge.net/projects/cubrid/files/CUBRID-#{node['cubrid']['version']}/Linux/#{node['cubrid']['filename']}/download"
+# The full URL of the CUBRID archive to download.
+set['cubrid']['download_url'] = "https://sourceforge.net/projects/cubrid/files/CUBRID-#{node['cubrid']['version']}/Linux/#{node['cubrid']['filename']}/download"
 
-# the target directory to install CUBRID
+# The target directory to install CUBRID.
 default['cubrid']['home'] = "/opt/cubrid"
 
 default['cubrid']['charset'] = 'en_US'
 default['cubrid']['lang'] = 'en_US'
 
+# "data_buffer_size" parameter value used in conf/cubrid.conf
+default['cubrid']['data_buffer_size'] = "512M"
 # Set the maximum number of clients this Server should respond to.
 # +1 is for Query Editory Broker.
 # Calculated based on the recommendation from the manual page
