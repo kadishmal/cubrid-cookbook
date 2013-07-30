@@ -4,6 +4,7 @@ This file is used to list changes made in each version of this cubrid cookbook.
 
 ## 2.3.4
 
+- Enh: added the latest PHP and PDO drivers.
 - Enh: Allow to configure `slow_log` and `sql_log` broker parameters.
 - Enh: Allow to configure `sort_buffer_size` and `temp_file_memory_size_in_pages` server parameters.
 - Enh: set CUBRID environment script from a template file.
