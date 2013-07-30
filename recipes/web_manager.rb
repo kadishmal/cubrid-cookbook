@@ -50,7 +50,10 @@ ruby_block "Check if CURBID Web Manager needs installation" do
     # than the one defined in the recipe attributes.
     # Also make sure the compatible version is installed, so that
     # 9.0.0 version doesn't override 8.4.1 version.
-    if version.length == 0 || version < node['cubrid']['cwm_full_version'] && version.index(node['cubrid']['cwm_major_version']) == 0
+    # Since CUBRID 9.1.0 comes with CWM 8.4.3, when we need to update
+    # CWM to 9.1.0 we should be able to do so even if CWM installed
+    # version is smaller.
+    if version.length == 0 || version < node['cubrid']['cwm_full_version'] && (version.index(node['cubrid']['version']) == 0 || node['cubrid']['version'] == "9.1.0")
       # Since it is not possible to call Chef providers from within `ruby_block`,
       # I need to take them out of `ruby_block` and call them when necessary
       # via `recources` function.

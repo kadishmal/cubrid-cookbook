@@ -10,6 +10,7 @@ This file is used to list changes made in each version of this cubrid cookbook.
 - Enh: set CUBRID environment script from a template file.
 - Enh: configure broker when installing CUBRID.
 - Enh: improved the default recipe.
+- Enh: improved web_manager recipe.
 - Ref: updated comments.
 
 ## 2.3.3
