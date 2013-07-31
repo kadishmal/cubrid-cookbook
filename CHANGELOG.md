@@ -2,7 +2,7 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
-## 2.3.4
+## 2.4.0
 
 - New: added Test Kitchen to test the cookbook.
 - Enh: added the latest PHP and PDO drivers.
