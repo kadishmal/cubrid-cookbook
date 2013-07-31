@@ -18,7 +18,7 @@ execute "cubrid broker stop" do
   not_if "cat #{BROKER_CONF} | grep 'Cookbook Name:: cubrid'"
 end
 
-# update cubrid.conf
+# update cubrid_broker.conf
 template BROKER_CONF do
   source "broker.cubrid_broker.conf.erb"
   not_if "cat #{BROKER_CONF} | grep 'Cookbook Name:: cubrid'"

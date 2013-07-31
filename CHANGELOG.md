@@ -2,6 +2,18 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 2.4.0
+
+- New: added Test Kitchen to test the cookbook.
+- Enh: added the latest PHP and PDO drivers.
+- Enh: Allow to configure `slow_log` and `sql_log` broker parameters.
+- Enh: Allow to configure `sort_buffer_size` and `temp_file_memory_size_in_pages` server parameters.
+- Enh: set CUBRID environment script from a template file.
+- Enh: configure broker when installing CUBRID.
+- Enh: improved the default recipe.
+- Enh: improved web_manager recipe.
+- Ref: updated comments.
+
 ## 2.3.3
 
 - Fix: make sure `build-essential` cookbook is included in `php_driver` and `pdo_cubrid` recipes.
