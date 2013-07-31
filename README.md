@@ -29,7 +29,7 @@ Tested on:
 - Ubuntu 13.04 LTS x86/x64
 	- Official Ubuntu Vagrant box: *[Ubuntu raring 64](http://cloud-images.ubuntu.com/raring/current/raring-server-cloudimg-vagrant-amd64-disk1.box)* (295MB)
 - CentOS 5.6 x64
-	- Vagrant box: *[CentOS 5.6 minimal](http://dl.dropbox.com/u/9227672/centos-5.6-x86_64-netinstall-4.1.6.box)* (277MB)
+	- Vagrant box: *[CentOS 5.6 minimal](http://ftp.cubrid.org/CUBRID_VMImages/Vagrant/vagrant-virtualbox-centos-5.6-x64-minimal.box)* (240MB)
 - CentOS 6.0 x64
 	- Vagrant box: *[CentOS 6.0 minimal](http://dl.dropbox.com/u/9227672/CentOS-6.0-x86_64-netboot-4.1.6.box)* (362MB)
 - CentOS 6.3 x64
