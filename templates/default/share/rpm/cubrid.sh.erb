@@ -1,0 +1,21 @@
+#
+# Cookbook Name:: cubrid
+# Templates:: cubrid for "default" recipe.
+#
+CUBRID=<%= "#{node['cubrid']['home']}" %>
+CUBRID_DATABASES=<%= "#{node['cubrid']['databases_dir']}" %>
+CUBRID_CHARSET=<%= "#{node['cubrid']['charset']}" %>
+
+LIB_PATH=`echo $LD_LIBRARY_PATH | grep -i cubrid`
+if [ "$LIB_PATH" = "" ];
+then
+	LD_LIBRARY_PATH=$CUBRID/lib:$LD_LIBRARY_PATH
+fi
+
+BIN_PATH=`echo $PATH | grep -i cubrid`
+if [ "$BIN_PATH" = "" ];
+then
+	PATH=$CUBRID/bin:$PATH
+fi
+
+export CUBRID CUBRID_DATABASES CUBRID_CHARSET LD_LIBRARY_PATH PATH

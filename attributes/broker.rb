@@ -11,6 +11,8 @@
 default['cubrid']['broker_count'] = 1
 default['cubrid']['min_num_appl_server'] = 5
 default['cubrid']['max_num_appl_server'] = 40
+default['cubrid']['slow_log'] = 'ON'
+default['cubrid']['sql_log'] = 'ON'
 
 # the target directory to install CUBRID
 default['cubrid']['home'] = "/opt/cubrid"

@@ -1,4 +1,4 @@
-## Description
+## cubrid Chef cookbook
 
 Provides recipies to:
 
@@ -29,7 +29,7 @@ Tested on:
 - Ubuntu 13.04 LTS x86/x64
 	- Official Ubuntu Vagrant box: *[Ubuntu raring 64](http://cloud-images.ubuntu.com/raring/current/raring-server-cloudimg-vagrant-amd64-disk1.box)* (295MB)
 - CentOS 5.6 x64
-	- Vagrant box: *[CentOS 5.6 minimal](http://dl.dropbox.com/u/9227672/centos-5.6-x86_64-netinstall-4.1.6.box)* (277MB)
+	- Vagrant box: *[CentOS 5.6 minimal](http://ftp.cubrid.org/CUBRID_VMImages/Vagrant/vagrant-virtualbox-centos-5.6-x64-minimal.box)* (240MB)
 - CentOS 6.0 x64
 	- Vagrant box: *[CentOS 6.0 minimal](http://dl.dropbox.com/u/9227672/CentOS-6.0-x86_64-netboot-4.1.6.box)* (362MB)
 - CentOS 6.3 x64
@@ -37,7 +37,7 @@ Tested on:
 - CentOS 6.4 x86/x64
 	- Vagrant boxes: *[CentOS 6.4 x86 minimal](http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-i386-v20130427.box)* (416MB), *[CentOS 6.4 x64 minimal](http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130427.box)* (442MB)
 
-**Note:** in order to use MySQL database sharding with CUBRID SHARD through **shard_mysql** recipe, CentOS 5.6~6.3 or Ubuntu 10.x is required as they provide MySQL 5.1. Ubuntu 12.04+ has remove MySQL 5.1 from their repositories. Support for MySQL 5.5 in **shard_mysql** recipe will be implemented soon.
+**Note:** in order to use MySQL database sharding with CUBRID SHARD through **shard_mysql** recipe, CentOS 5.6~6.3 or Ubuntu 10.x is required as they provide MySQL 5.1. Ubuntu 12.04+ has removed MySQL 5.1 from their repositories. Support for MySQL 5.5 in **shard_mysql** recipe is expected to be implemented when CUBRID 10.x is released.
 
 ##Requirements
 
@@ -228,7 +228,7 @@ chef.add_recipe "cubrid::pdo_cubrid"
 
 This will:
 
-1. Install CUBRID for PDO driver < 9.1.0, in case CUBRID is not already installed. 
+1. Install CUBRID for PDO driver < 9.1.0, in case CUBRID is not already installed.
 2. Install the `libgcrypt-devel` dependency library, which is required to build PECL packages, because in PHP 5.3.3 installed via YUM this library does not get installed by default.
 3. Install CUBRID PDO driver from [PHP PECL Repository](http://pecl.php.net/package/PDO_CUBRID) if the PDO driver is not already installed (*same version as the previously installed CUBRID Database*). If no CUBRID version is specified, defaults to the latest available vesion.
 4. Create */etc/php5/conf.d/pdo_cubrid.ini* to tell PHP to load CUBRID PDO driver.
@@ -265,7 +265,7 @@ chef.add_recipe "cubrid::php_driver"
 
 This will:
 
-1. Install CUBRID for PHP driver < 9.1.0, in case CUBRID is not already installed. 
+1. Install CUBRID for PHP driver < 9.1.0, in case CUBRID is not already installed.
 2. Install the `libgcrypt-devel` dependency library, which is required to build PECL packages, because in PHP 5.3.3 installed via YUM this library does not get installed by default.
 3. Install CUBRID PHP driver from [PHP PECL Repository](http://pecl.php.net/package/CUBRID) if it is not already installed (*same version as the previously installed CUBRID Database*). If no CUBRID version is specified, defaults to the latest available vesion.
 4. Create */etc/php5/conf.d/cubrid.ini* to tell PHP to load CUBRID PHP driver.
@@ -429,13 +429,16 @@ After CWM is installed, you can access it at [https://your_vm_ip_address:8282](h
 
 The default username and password to connect to CUBRID Manager Server are **admin/admin**. Once you login for the first time, CWM will prompt you to change the password. Visit [CWM Wiki](http://www.cubrid.org/wiki_tools/entry/cubrid-web-manager) for more information and tutorials.
 
+## Running tests
+
+**cubrid** cookbook is tested on multiple VMs with Test Kitchen. To run the tests locally, refer to the [README](https://github.com/kadishmal/cubrid-cookbook/tree/master/test/cookbooks/cubrid_test) in the **cubrid_test** cookbook which is distributed together with this **cubrid** cookbook.
+
 ## TODO
 
 - Test on Fedora.
 - Allow users to specify custom port for CUBRID HA.
 - Test on a vanilla CentOS.
 - Validate the database name.
-- Add Chef and Ohai dependency `depends 'chef', '>= 1.1.2'` in metadata.rb.
 - In shard_mysql check if Ubuntu version is 10.x.
 - Add MySQL 5.5 support which is distributed in Ubuntu 12.04+.
 - When setting `max_clients` in cubrid.conf, need to updated the `ulimit` of Linux because by defuault it allows to open 1024 files at a time. Depending on the `max_clients` size, `ulimit` has to be adjusted. See [http://posidev.com/blog/2009/06/04/set-ulimit-parameters-on-ubuntu/](http://posidev.com/blog/2009/06/04/set-ulimit-parameters-on-ubuntu/) for more instructions.
