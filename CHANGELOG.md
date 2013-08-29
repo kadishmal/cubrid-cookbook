@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 2.5.0
+
+- New: added CUBRID 8.4.4 support. Updated Python and Perl driver recipes to newer versions.
+
 ## 2.4.0
 
 - New: added Test Kitchen to test the cookbook.

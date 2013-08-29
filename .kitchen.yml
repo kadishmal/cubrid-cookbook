@@ -48,19 +48,29 @@ suites:
   run_list:
   - recipe[cubrid_test]
   - recipe[cubrid_test::demodb]
-  - recipe[cubrid_test::php_driver]
   - recipe[cubrid_test::pdo_cubrid]
+  - recipe[cubrid_test::php_driver]
   attributes: {
     cubrid: {
       version: '9.1.0'
+    }
+  }
+- name: cubrid-8.4.4
+  run_list:
+  - recipe[cubrid_test]
+  - recipe[cubrid_test::demodb]
+  # At this moment PHP/PDO version 8.4.4 have not been uploaded to PECL.
+  attributes: {
+    cubrid: {
+      version: '8.4.4'
     }
   }
 - name: cubrid-8.4.3
   run_list:
   - recipe[cubrid_test]
   - recipe[cubrid_test::demodb]
-  - recipe[cubrid_test::php_driver]
   - recipe[cubrid_test::pdo_cubrid]
+  - recipe[cubrid_test::php_driver]
   attributes: {
     cubrid: {
       version: '8.4.3'
@@ -70,8 +80,8 @@ suites:
   run_list:
   - recipe[cubrid_test]
   - recipe[cubrid_test::demodb]
-  - recipe[cubrid_test::php_driver]
   - recipe[cubrid_test::pdo_cubrid]
+  - recipe[cubrid_test::php_driver]
   attributes: {
     cubrid: {
       version: '8.4.1'

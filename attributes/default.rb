@@ -11,7 +11,7 @@ include_attribute "cubrid::broker"
 include_attribute "cubrid::database"
 
 # Latest build numbers for each CUBRID version in the form of 'version'=>'build_number'.
-build_numbers = {'9.1.0' => '0212', '9.0.0' => '0478', '8.4.3' => '1005', '8.4.1' => '7007'}
+build_numbers = {'9.1.0' => '0212', '9.0.0' => '0478', '8.4.4' => '0227', '8.4.3' => '1005', '8.4.1' => '7007'}
 
 # The default version of CUBRID to install.
 default['cubrid']['version'] = "9.1.0"
