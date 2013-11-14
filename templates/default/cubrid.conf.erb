@@ -68,8 +68,8 @@ db_volume_size=<%= "#{node['cubrid']['db_volume_size']}" %>
 log_volume_size=<%= "#{node['cubrid']['log_volume_size']}" %>
 
 # Adds when configuring HA (Logging parameters)
-log_max_archives=100
-force_remove_log_archives=no
+log_max_archives=<%= "#{node['cubrid']['log_max_archives']}" %>
+force_remove_log_archives=<%= "#{node['cubrid']['force_remove_log_archives']}" %>
 
 # Adds when configuring HA (HA mode)
 ha_mode=on

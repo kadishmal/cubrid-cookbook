@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of this cubrid cookbook.
 
+## 2.5.1
+
+- New: Allow to configure `log_max_archives` and `force_remove_log_archives` server parameters.
+
 ## 2.5.0
 
 - New: added CUBRID 8.4.4 support. Updated Python and Perl driver recipes to newer versions.

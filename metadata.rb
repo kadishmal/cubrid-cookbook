@@ -12,7 +12,7 @@ maintainer_email "kadishmal@gmail.com"
 license          "MIT"
 description      "Installs/Configures CUBRID Database"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "2.5.0"
+version          "2.5.1"
 
 
 depends          "build-essential"

@@ -29,7 +29,9 @@ set['cubrid']['download_url'] = "https://sourceforge.net/projects/cubrid/files/C
 # The target directory to install CUBRID.
 default['cubrid']['home'] = "/opt/cubrid"
 
+# CUBRID_CHARSET variable is used since CUBRID version 9.0 for Unicode support.
 default['cubrid']['charset'] = 'en_US'
+# CUBRID 8.4.x uses CUBRID_LANG environment variable.
 default['cubrid']['lang'] = 'en_US'
 
 # "data_buffer_size" parameter value used in conf/cubrid.conf
@@ -44,6 +46,10 @@ default['cubrid']['sort_buffer_size'] = '2M'
 # default `--db-page-size` is 16KB = 16384 bytes.
 # 4 pages = 4 * 16384 = 65536 bytes = 64KB
 default['cubrid']['temp_file_memory_size_in_pages'] = 4
+# `log_max_archives` server parameter value. Defaults to `INT_MAX` (`2147483647`).
+default['cubrid']['log_max_archives'] = 2147483647
+# `force_remove_log_archives` server parameter value. Defaults to `yes`.
+default['cubrid']['force_remove_log_archives'] = 'yes'
 
 # The configurations directory.
 set['cubrid']['conf_dir'] = "#{node['cubrid']['home']}/conf"
